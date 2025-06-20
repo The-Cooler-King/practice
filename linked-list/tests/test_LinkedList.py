@@ -27,7 +27,31 @@ class TestLinkedList(unittest.TestCase):
     def test_list_is_not_empty(self):
         # Arrange
         test_list = LinkedList()
-        # Add Node
+        test_list.prepend(5)
 
         # Assert
         self.assertFalse(test_list.is_empty())
+
+    def test_prepend_to_empty_list(self):
+        # Arrange
+        test_list = LinkedList()
+
+        # Act
+        test_list.prepend(5)
+
+        # Assert
+        self.assertEqual(test_list.head.value, 5)
+        self.assertIsNone(test_list.head.next)
+
+    def test_prepend_to_list(self):
+        # Arrange
+        test_list = LinkedList()
+        test_list.prepend(5)
+        original_node = test_list.head
+
+        # Act
+        test_list.prepend(6)
+
+        # Assert
+        self.assertEqual(test_list.head.value, 6)
+        self.assertEqual(test_list.head.next, original_node)
