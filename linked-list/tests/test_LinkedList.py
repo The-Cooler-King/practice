@@ -16,7 +16,7 @@ class TestLinkedList(unittest.TestCase):
         test_list = LinkedList()
 
         # Assert
-        self.assertIsNone(test_list.head)
+        self.assertEqual(repr(test_list), "Empty List")
 
     def test_list_is_empty(self):
         # Arrange
@@ -41,8 +41,7 @@ class TestLinkedList(unittest.TestCase):
         test_list.prepend(5)
 
         # Assert
-        self.assertEqual(test_list.head.value, 5)
-        self.assertIsNone(test_list.head.next)
+        self.assertEqual(repr(test_list), "5")
 
     def test_prepend_to_list(self):
         # Arrange
@@ -54,8 +53,7 @@ class TestLinkedList(unittest.TestCase):
         test_list.prepend(6)
 
         # Assert
-        self.assertEqual(test_list.head.value, 6)
-        self.assertEqual(test_list.head.next, original_node)
+        self.assertEqual(repr(test_list), "6 -> 5")
 
     def test_pop_node_from_empty_list(self):
         # Arrange
@@ -66,7 +64,7 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertIsNone(pop_value)
-        self.assertIsNone(test_list.head)
+        self.assertEqual(repr(test_list), "Empty List")
 
     def test_pop_node_from_single_node_list(self):
         # Arrange
@@ -77,7 +75,7 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(pop_value, 1)
-        self.assertIsNone(test_list.head)
+        self.assertEqual(repr(test_list), "Empty List")
 
     def test_pop_node_from_two_node_list(self):
         # Arrange
@@ -88,8 +86,7 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(pop_value, 1)
-        self.assertEqual(test_list.head.value, 2)
-        self.assertIsNone(test_list.head.next)
+        self.assertEqual(repr(test_list), "2")
 
     def test_pop_node_from_multiple_node_list(self):
         # Arrange
@@ -100,11 +97,51 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(pop_value, 1)
-        self.assertEqual(test_list.head.value, 4)
-        self.assertEqual(test_list.head.next.value, 3)
-        self.assertEqual(test_list.head.next.next.value, 2)
-        self.assertIsNone(test_list.head.next.next.next)
+        self.assertEqual(repr(test_list), "4 -> 3 -> 2")
 
+    def test_iterating_over_list(self):
+        # Arrange
+        test_list = create_list_from_values(["S", "S", "E", "C", "C", "U", "S"])
+
+        # Act
+        result = ""
+        for node_value in test_list:
+            result += str(node_value)
+
+        # Assert
+        self.assertEqual(result, "SUCCESS")
+
+    def test_iterating_over_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        result = ""
+        for node_value in test_list:
+            result += str(node_value)
+
+        # Assert
+        self.assertEqual(result, "")
+
+    def test_repr_list(self):
+        # Arrange
+        test_list = create_list_from_values([1, 2, 3, 4])
+
+        # Act
+        result = repr(test_list)
+
+        # Assert
+        self.assertEqual(result, "4 -> 3 -> 2 -> 1")
+
+    def test_repr_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        result = repr(test_list)
+
+        # Assert
+        self.assertEqual(result, "Empty List")
 
 ###### HELPER FUNCTIONS ######
 def create_list_from_values(values):
