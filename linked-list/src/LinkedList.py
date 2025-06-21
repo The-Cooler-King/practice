@@ -29,3 +29,24 @@ class LinkedList:
             new_node.next = self.head
             self.head = new_node
 
+    def pop(self):
+        """
+        Takes the node from the end of the list
+
+        Return: the value of the removed node
+        """
+        if not self.head:
+            return None
+
+        if not self.head.next:
+            tail_value = self.head.value
+            self.head = None
+            return tail_value
+
+        current_node = self.head
+        while current_node.next.next: # stop at the penultimate node
+            current_node = current_node.next
+
+        tail_value = current_node.next.value
+        current_node.next = None
+        return tail_value
