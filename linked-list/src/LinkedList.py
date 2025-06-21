@@ -50,3 +50,18 @@ class LinkedList:
         tail_value = current_node.next.value
         current_node.next = None
         return tail_value
+
+    def __iter__(self):
+        """
+        Allow list to be iterated over
+        """
+        current_node = self.head
+        while current_node:
+            yield current_node.value
+            current_node = current_node.next
+
+    def __repr__(self):
+        """
+        Allow list to be printed
+        """
+        return " -> ".join(str(value) for value in self) or "Empty List"
