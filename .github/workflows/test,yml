@@ -1,0 +1,30 @@
+name: Run Python Unit Tests
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.11]  # Adjust if you're using another version
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+
+    - name: Discover and run unit tests
+      run: |
+        find . -type d -name 'tests' -exec python -m unittest discover {} \;
