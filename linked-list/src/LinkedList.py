@@ -118,6 +118,22 @@ class LinkedList:
 
         return tortoise_pointer.value
 
+    def reverse(self):
+        """
+        Reverses the order of the nodes in place using 3 pointers
+
+        Explanation:
+            The first pointer is called next_node and points to self.head. The next pointer points to self.head.next
+            and calls it current_node. The final pointer points to self.head.next.next and calls it previous. Now
+            picture that you are physically traversing this list. You stand at head, and turn backwards. Head's pointer
+            now points backwards between your legs to self.next. You flip that pointer around to point at nothing and
+            then you hop back to the next node. You flip that nodes pointer around to point at head. You hop backwards
+            again, and flip that nodes pointer to the one you were just at. So on and so on. This is essentially what is
+            happening, and that is why we need the "previous" point: to know where to jump after we have flipped the
+            pointer of the node we are standing on. The first time I encountered this strategy, I was super confused.
+            I wonder if this made it more or less complicated :)
+        """
+
     def __iter__(self):
         """
         Allow list to be iterated over
