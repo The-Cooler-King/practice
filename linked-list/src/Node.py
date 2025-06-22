@@ -23,4 +23,4 @@ class Node:
         if not isinstance(other, Node):  # check if other is a also an instance of the Node class
             return False
 
-        return self.value == other.value and self.next == other.next
+        return self is other or self.value == other.value
