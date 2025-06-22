@@ -275,6 +275,47 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(middle_node_value, "E")
 
+    def test_reverse_full_list(self):
+        # Arrange
+        test_list = create_list_from_values(["I", "H", "G", "F", "E", "D", "C", "B", "A"])
+
+        # Act
+        test_list.reverse()
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([I -> H -> G -> F -> E -> D -> C -> B -> A])")
+
+    def test_reverse_single_node_list(self):
+        # Arrange
+        test_list = create_list_from_values(["A"])
+
+        # Act
+        test_list.reverse()
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A])")
+
+    def test_reverse_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        test_list.reverse()
+
+        # Assert
+        self.assertEqual(repr(test_list), "Empty List")
+
+    def test_reverse_cyclical_list(self):
+        # Arrange
+        test_list = create_list_from_values(["B", "A"])
+        test_list.head.next.next = test_list.head  # set node "B" next to node "A"
+
+        # Act & Assert
+        with self.assertRaises(RuntimeError) as context:
+            test_list.reverse()
+
+        self.assertEqual(str(context.exception), "Cannot reverse a cyclical linked list")
+
 
 ###### HELPER FUNCTIONS ######
 def create_list_from_values(values):

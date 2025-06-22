@@ -89,7 +89,6 @@ class LinkedList:
 
         return False
 
-
     def find_middle(self):
         """
         Uses Tortoise-Hare algorithm to find the middle node of the list. The hare pointer reaches the end of the list
@@ -129,10 +128,25 @@ class LinkedList:
             now points backwards between your legs to self.next. You flip that pointer around to point at nothing and
             then you hop back to the next node. You flip that nodes pointer around to point at head. You hop backwards
             again, and flip that nodes pointer to the one you were just at. So on and so on. This is essentially what is
-            happening, and that is why we need the "previous" point: to know where to jump after we have flipped the
+            happening, and that is why we need the "next" point: to know where to jump after we have flipped the
             pointer of the node we are standing on. The first time I encountered this strategy, I was super confused.
             I wonder if this made it more or less complicated :)
         """
+        if self.is_empty() or self.head.next is None:
+            return  # Nothing to reverse
+        if self.has_cycle():
+            raise RuntimeError("Cannot reverse a cyclical linked list")
+
+        previous_node = None
+        current_node = self.head
+
+        while current_node:
+            next_node = current_node.next  # store the next node
+            current_node.next = previous_node  # reverse the pointer
+            previous_node = current_node  # move previous forward
+            current_node = next_node  # move current forward
+
+        self.head = previous_node
 
     def __iter__(self):
         """
