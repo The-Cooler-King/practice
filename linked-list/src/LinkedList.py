@@ -90,6 +90,33 @@ class LinkedList:
         return False
 
 
+    def find_middle(self):
+        """
+        Uses Tortoise-Hare algorithm to find the middle node of the list. The hare pointer reaches the end of the list
+        twice as fast as the tortoise pointer since it is traveling at twice the speed. Therefore, the tortoise pointer
+        will be at the middle node of the list as the hare reaches the end.
+
+        NOTE: If a list has an odd number of nodes (e.g. [0, 1, 2, 3, 4]) the middle is obvious (2), but for an even
+        number of nodes (e.g. [0, 1, 2, 3]), what will be returned? This algorithm returns the 2nd of the 2 middles (2)
+
+        Return: the value of the middle node
+        """
+        if self.is_empty():
+            raise RuntimeError("Cannot find the middle of an empty list")
+        if self.has_cycle():
+            raise RuntimeError("Cannot find the middle of a cyclical linked list")
+
+        hare_pointer = self.head
+        tortoise_pointer = self.head
+
+        while hare_pointer and hare_pointer.next:
+            # if the hare pointer or next node is None then you have reached the end of the list
+
+            # advance the pointers
+            tortoise_pointer = tortoise_pointer.next
+            hare_pointer = hare_pointer.next.next
+
+        return tortoise_pointer.value
 
     def __iter__(self):
         """

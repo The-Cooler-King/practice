@@ -123,6 +123,19 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(result, "")
 
+    def test_iterating_over_cyclical_list(self):
+        # Arrange
+        test_list = create_list_from_values(["B", "A"])
+        test_list.head.next.next = test_list.head  # set node "B" next to node "A"
+
+        # Act & Assert
+        with self.assertRaises(RuntimeError) as context:
+            result = ""
+            for node_value in test_list:
+                result += str(node_value)
+
+        self.assertEqual(str(context.exception), "Cannot iterate over a cyclic linked list")
+
     def test_repr_list(self):
         # Arrange
         test_list = create_list_from_values([1, 2, 3, 4])
@@ -209,17 +222,58 @@ class TestLinkedList(unittest.TestCase):
         current_node = test_list.head
         while current_node:
             if current_node.value == "B":
-                node_B = current_node
+                node_b = current_node
 
             if current_node.value == "G":
-                node_G = current_node
+                node_g = current_node
 
             current_node = current_node.next
 
-        node_G.next = node_B  # set node "G" next to node "B"
+        node_g.next = node_b  # set node "G" next to node "B"
 
         # Act & Assert
         self.assertTrue(test_list.has_cycle())
+
+    def test_find_middle_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act & Assert
+        with self.assertRaises(RuntimeError) as context:
+            test_list.find_middle()
+
+        self.assertEqual(str(context.exception), "Cannot find the middle of an empty list")
+
+    def test_find_middle_cyclical_list(self):
+        # Arrange
+        test_list = create_list_from_values(["B", "A"])
+        test_list.head.next.next = test_list.head  # set node "B" next to node "A"
+
+        # Act & Assert
+        with self.assertRaises(RuntimeError) as context:
+            test_list.find_middle()
+
+        self.assertEqual(str(context.exception), "Cannot find the middle of a cyclical linked list")
+
+    def test_find_middle_even_node_list(self):
+        # Arrange
+        test_list = create_list_from_values(["F", "E", "D", "C", "B", "A"])
+
+        # Act
+        middle_node_value = test_list.find_middle()
+
+        # Assert
+        self.assertEqual(middle_node_value, "D")
+
+    def test_find_middle_odd_node_list(self):
+        # Arrange
+        test_list = create_list_from_values(["I", "H", "G", "F", "E", "D", "C", "B", "A"])
+
+        # Act
+        middle_node_value = test_list.find_middle()
+
+        # Assert
+        self.assertEqual(middle_node_value, "E")
 
 
 ###### HELPER FUNCTIONS ######
