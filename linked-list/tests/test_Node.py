@@ -32,7 +32,6 @@ class TestNode(unittest.TestCase):
 
         # Assert
         self.assertEqual(next_node, node1)
-        self.assertEqual(node2.value, 2)
 
     def test_node_repr(self):
         # Arrange
@@ -48,11 +47,12 @@ class TestNode(unittest.TestCase):
         # Arrange
         node1 = Node(5)
         node2 = Node(5)
-        node3 = Node(5, Node(6))
+        node3 = Node(5, node1)
 
         # Act & Assert
-        self.assertEqual(node1, node2)
+        self.assertNotEqual(node1, node2)
         self.assertNotEqual(node1, node3)
+        self.assertEqual(node1, node3.next)
 
 
 if __name__ == "__main__":
