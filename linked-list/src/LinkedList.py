@@ -8,6 +8,7 @@ class LinkedList:
         Sets the head to None
         """
         self._head = None
+        self._index_map = {}
 
     def head(self):
         """
@@ -21,9 +22,77 @@ class LinkedList:
         """
         return self._head is None
 
+    def rebuild_index_map(self, start_index: int = 0, start_node: Node = self._head):
+        """
+        Traverses the list and (re)assigns a sequential index to each node from the given starting point.
+
+        Args:
+            start_index (int): Index to begin mapping from. Defaults to 0.
+            start_node (Node): Node to begin mapping from. Defaults to the head of the list.
+
+        Notes:
+            If called with default arguments, this clears and fully rebuilds the index map.
+            If called with a custom start_index and start_node, it updates the map from that point forward.
+            In that case, earlier indices may remain stale, so ensure they were already accurate or explicitly updated.
+        """
+
+        # if rebuilding from scratch, clear self._index_map
+        if start_node == self._head or start_index == 0:
+            self._index_map = {}
+
+        current_node = start_node
+        index = start_index
+
+        # traverse the list and assign a sequential integer index to each node
+        while current_node:
+            self._index_map[index] = current_node
+            index += 1
+            current_node = current_node.next
+
+    def _remove_node_from_index_map(self, index):
+        """
+        Deletes the index, Node pair from self._index_map. Used when removing a node from the list
+        """
+
+        deleted_node = self._index_map.pop(index, None)
+
+        if deleted_node.next: # if there are subsequent nodes, an update must be done to the self._index_map
+            self.rebuild_index_map(index, deleted_node.next)
+
+    def _add_node_to_index_map(self, index, node):
+        """
+        Adds the index, Node pair to self._index_map. Used when adding a node to the list.
+        """
+        self._index_map[index] = node
+
+        if node.next: # if there are subsequent nodes, an update must be done to the self._index_map
+            self.rebuild_index_map(index + 1, node.next)
+
+    def validate_index_map(self):
+        """
+        Validates the integrity of the index map by ensuring each indexed node in the map corresponds exactly
+        to the node at that position in the linked list.
+
+        Returns:
+            bool: True if the index map is accurate and consistent with the current list structure;
+                  False if there are missing entries or incorrect mappings.
+
+        Use Cases:
+            - Debugging: Helps detect stale or corrupted index map entries.
+            - Testing: Can be used in unit tests to assert internal consistency after list operations.
+        """
+        current_node = self._head
+        index = 0
+
+        while current_node:
+            if index not in self._index_map or self._index_map[index] != current_node:
+                return False
+            index += 1
+            current_node = current_node.next
+
     def prepend(self, value):
         """
-        Adds a node to the fron or the head of the linked list
+        Adds a node to the front or the head of the linked list
 
         Args:
             value: The value to store in the node that will be prepended
@@ -48,6 +117,7 @@ class LinkedList:
         if not self._head.next:
             tail_value = self._head.value
             self._head = None
+
             return tail_value
 
         current_node = self._head

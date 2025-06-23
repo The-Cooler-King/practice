@@ -55,6 +55,30 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertFalse(test_list.is_empty())
 
+    def test_rebuild_index_map(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.rebuild_index_map()
+
+        # Assert
+        self.assertEqual(test_list._index_map[0].value, "A")
+        self.assertEqual(test_list._index_map[1].value, "B")
+        self.assertEqual(test_list._index_map[2].value, "C")
+        self.assertEqual(test_list._index_map[3].value, "D")
+
+    def test_rebuild_index_map_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        test_list.rebuild_index_map()
+
+        # Assert
+        with self.assertRaises(KeyError) as context:
+            test_list._index_map[0]
+
     def test_prepend_to_empty_list(self):
         # Arrange
         test_list = LinkedList()
