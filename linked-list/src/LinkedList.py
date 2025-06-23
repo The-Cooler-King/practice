@@ -7,13 +7,19 @@ class LinkedList:
         Initializes an empty singly linked list
         Sets the head to None
         """
-        self.head = None
+        self._head = None
+
+    def head(self):
+        """
+        Return the head of the list
+        """
+        return self._head
 
     def is_empty(self) -> bool:
         """
         Returns True if the list is empty, False otherwise.
         """
-        return self.head is None
+        return self._head is None
 
     def prepend(self, value):
         """
@@ -25,10 +31,10 @@ class LinkedList:
         new_node = Node(value)
 
         if self.is_empty():
-            self.head = new_node
+            self._head = new_node
         else:
-            new_node.next = self.head
-            self.head = new_node
+            new_node.next = self._head
+            self._head = new_node
 
     def pop(self):
         """
@@ -39,12 +45,12 @@ class LinkedList:
         if self.is_empty():
             return None
 
-        if not self.head.next:
-            tail_value = self.head.value
-            self.head = None
+        if not self._head.next:
+            tail_value = self._head.value
+            self._head = None
             return tail_value
 
-        current_node = self.head
+        current_node = self._head
         while current_node.next.next:  # stop at the penultimate node
             current_node = current_node.next
 
@@ -72,8 +78,8 @@ class LinkedList:
         #     return False
 
         # set both pointers equal to head to get both racers to the starting line
-        hare_pointer = self.head
-        tortoise_pointer = self.head
+        hare_pointer = self._head
+        tortoise_pointer = self._head
 
         while hare_pointer and hare_pointer.next:
             # if the hare pointer or next node is None then you have reached the end of the list and there's no cycle
@@ -105,8 +111,8 @@ class LinkedList:
         if self.has_cycle():
             raise RuntimeError("Cannot find the middle of a cyclical linked list")
 
-        hare_pointer = self.head
-        tortoise_pointer = self.head
+        hare_pointer = self._head
+        tortoise_pointer = self._head
 
         while hare_pointer and hare_pointer.next:
             # if the hare pointer or next node is None then you have reached the end of the list
@@ -122,8 +128,8 @@ class LinkedList:
         Reverses the order of the nodes in place using 3 pointers
 
         Explanation:
-            The first pointer is called next_node and points to self.head. The next pointer points to self.head.next
-            and calls it current_node. The final pointer points to self.head.next.next and calls it previous. Now
+            The first pointer is called next_node and points to self._head. The next pointer points to self._head.next
+            and calls it current_node. The final pointer points to self._head.next.next and calls it previous. Now
             picture that you are physically traversing this list. You stand at head, and turn backwards. Head's pointer
             now points backwards between your legs to self.next. You flip that pointer around to point at nothing and
             then you hop back to the next node. You flip that nodes pointer around to point at head. You hop backwards
@@ -132,13 +138,13 @@ class LinkedList:
             pointer of the node we are standing on. The first time I encountered this strategy, I was super confused.
             I wonder if this made it more or less complicated :)
         """
-        if self.is_empty() or self.head.next is None:
+        if self.is_empty() or self._head.next is None:
             return  # Nothing to reverse
         if self.has_cycle():
             raise RuntimeError("Cannot reverse a cyclical linked list")
 
         previous_node = None
-        current_node = self.head
+        current_node = self._head
 
         while current_node:
             next_node = current_node.next  # store the next node
@@ -146,7 +152,7 @@ class LinkedList:
             previous_node = current_node  # move previous forward
             current_node = next_node  # move current forward
 
-        self.head = previous_node
+        self._head = previous_node
 
     def __iter__(self):
         """
@@ -157,7 +163,7 @@ class LinkedList:
         """
         if self.has_cycle():
             raise RuntimeError("Cannot iterate over a cyclic linked list")
-        current_node = self.head
+        current_node = self._head
         while current_node:
             yield current_node.value
             current_node = current_node.next
@@ -173,7 +179,7 @@ class LinkedList:
             return "Empty List"
 
         node_values = []
-        current_node = self.head
+        current_node = self._head
         visited_nodes = set()
 
         while current_node:

@@ -18,6 +18,28 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(repr(test_list), "Empty List")
 
+    def test_head(self):
+        # Arrange
+        test_list = LinkedList()
+        test_list.prepend("A")
+
+        # Act
+        head_node = test_list.head()
+
+        # Assert
+        self.assertEqual(head_node.value, "A")
+        self.assertIsNone(head_node.next)
+
+    def test_head_empty_list(self):
+        # Arrange
+        test_list = LinkedList()
+
+        # Act
+        head_node = test_list.head()
+
+        # Assert
+        self.assertIsNone(head_node)
+
     def test_list_is_empty(self):
         # Arrange
         test_list = LinkedList()
@@ -47,7 +69,7 @@ class TestLinkedList(unittest.TestCase):
         # Arrange
         test_list = LinkedList()
         test_list.prepend(5)
-        original_node = test_list.head
+        original_node = test_list._head
 
         # Act
         test_list.prepend(6)
@@ -126,7 +148,7 @@ class TestLinkedList(unittest.TestCase):
     def test_iterating_over_cyclical_list(self):
         # Arrange
         test_list = create_list_from_values(["B", "A"])
-        test_list.head.next.next = test_list.head  # set node "B" next to node "A"
+        test_list._head.next.next = test_list._head  # set node "B" next to node "A"
 
         # Act & Assert
         with self.assertRaises(RuntimeError) as context:
@@ -154,7 +176,7 @@ class TestLinkedList(unittest.TestCase):
         # Arrange
         test_list = create_list_from_values(["G", "F", "E", "D", "C", "B", "A"])
         # traverse list and to get node "B" and node "G"
-        current_node = test_list.head
+        current_node = test_list._head
         while current_node:
             if current_node.value == "B":
                 node_B = current_node
@@ -188,7 +210,7 @@ class TestLinkedList(unittest.TestCase):
         # Arrange
         test_list = LinkedList()
         test_list.prepend("A")
-        test_list.head.next = test_list.head  # set head equal to itself. single node loop
+        test_list._head.next = test_list._head  # set head equal to itself. single node loop
 
         # Act & Assert
         self.assertTrue(test_list.has_cycle())
@@ -203,7 +225,7 @@ class TestLinkedList(unittest.TestCase):
     def test_has_cycle_two_node_list_with_cycle(self):
         # Arrange
         test_list = create_list_from_values(["B", "A"])
-        test_list.head.next.next = test_list.head  # set node "B" next to node "A"
+        test_list._head.next.next = test_list._head  # set node "B" next to node "A"
 
         # Act & Assert
         self.assertTrue(test_list.has_cycle())
@@ -219,7 +241,7 @@ class TestLinkedList(unittest.TestCase):
         # Arrange
         test_list = create_list_from_values(["G", "F", "E", "D", "C", "B", "A"])
         # traverse list and to get node "B" and node "G"
-        current_node = test_list.head
+        current_node = test_list._head
         while current_node:
             if current_node.value == "B":
                 node_b = current_node
@@ -247,7 +269,7 @@ class TestLinkedList(unittest.TestCase):
     def test_find_middle_cyclical_list(self):
         # Arrange
         test_list = create_list_from_values(["B", "A"])
-        test_list.head.next.next = test_list.head  # set node "B" next to node "A"
+        test_list._head.next.next = test_list._head  # set node "B" next to node "A"
 
         # Act & Assert
         with self.assertRaises(RuntimeError) as context:
@@ -308,7 +330,7 @@ class TestLinkedList(unittest.TestCase):
     def test_reverse_cyclical_list(self):
         # Arrange
         test_list = create_list_from_values(["B", "A"])
-        test_list.head.next.next = test_list.head  # set node "B" next to node "A"
+        test_list._head.next.next = test_list._head  # set node "B" next to node "A"
 
         # Act & Assert
         with self.assertRaises(RuntimeError) as context:

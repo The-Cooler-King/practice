@@ -50,6 +50,18 @@ Initializes an empty linked list with `head` set to `None`.
 
 #### Methods:
 
+##### `head()`
+Returns the head node of the list
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(5)
+ll.prepend(10)
+print(ll.head().value)  # 5
+```
+---
+
 ##### `prepend(value)`
 Adds a new node to the front of the list.
 
@@ -109,7 +121,7 @@ b = Node(2, a)
 a.next = b  # cycle
 
 ll = LinkedList()
-ll.head = a
+ll._head = a # DO NOT DO THIS. Use public methods to affect the list instance
 ll.has_cycle()  # True
 ```
 ---
