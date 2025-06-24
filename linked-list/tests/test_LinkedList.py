@@ -7,6 +7,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
 from LinkedList import LinkedList
+from Node import Node
 
 
 class TestLinkedList(unittest.TestCase):
@@ -79,6 +80,60 @@ class TestLinkedList(unittest.TestCase):
         with self.assertRaises(KeyError) as context:
             test_list._index_map[0]
 
+    def test__rebuild_index_map_partial(self):
+        # Arrange
+        test_list = create_list_from_values(["C", "B", "A"])
+        node_b = test_list.head().next
+        node_c = node_b.next
+
+        # Act
+        test_list._rebuild_index_map_partial(start_index=1, start_node=node_b)
+
+        # Assert
+        self.assertEqual(test_list._index_map[1], node_b)
+        self.assertEqual(test_list._index_map[2], node_c)
+
+    def test_validate_index_map_valid_map(self):
+        # Arrange
+        test_list = create_list_from_values(["C", "B", "A"])
+        test_list.rebuild_index_map()
+
+        # Act & Assert
+        self.assertTrue(test_list.validate_index_map())
+
+    def test_validate_index_map_stale_index(self):
+        # Arrange
+        test_list = create_list_from_values(["C", "B", "A"])
+        test_list.rebuild_index_map()
+        # pop node_c, but restore it to the index map
+        node_c_value = test_list.pop()
+        test_list._index_map[2] = Node(node_c_value)
+
+        # Act & Assert
+        self.assertFalse(test_list.validate_index_map())
+
+    def test_validate_index_map_incorrect_mapping(self):
+        # Arrange
+        test_list = create_list_from_values(["C", "B", "A"])
+        test_list.rebuild_index_map()
+        node_a = test_list.head()
+        node_b = node_a.next
+        # switch indexes of node_a and node_b
+        test_list._index_map[0] = node_b
+        test_list._index_map[1] = node_a
+
+        # Act & Assert
+        self.assertFalse(test_list.validate_index_map())
+
+    def test_validate_index_map_missing_mapping(self):
+        # Arrange
+        test_list = create_list_from_values(["C", "B", "A"])
+        test_list.rebuild_index_map()
+        test_list._index_map.pop(2)  # get rid of index 2 in the index map
+
+        # Act & Assert
+        self.assertFalse(test_list.validate_index_map())
+
     def test_prepend_to_empty_list(self):
         # Arrange
         test_list = LinkedList()
@@ -93,7 +148,6 @@ class TestLinkedList(unittest.TestCase):
         # Arrange
         test_list = LinkedList()
         test_list.prepend(5)
-        original_node = test_list._head
 
         # Act
         test_list.prepend(6)

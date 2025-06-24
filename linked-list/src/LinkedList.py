@@ -9,6 +9,7 @@ class LinkedList:
         """
         self._head = None
         self._index_map = {}
+        self._list_length = 0
 
     def head(self):
         """
@@ -22,28 +23,34 @@ class LinkedList:
         """
         return self._head is None
 
-    def rebuild_index_map(self, start_index: int = 0, start_node: Node = self._head):
+    def rebuild_index_map(self):
         """
-        Traverses the list and (re)assigns a sequential index to each node from the given starting point.
+        Rebuilds index map from scratch.
+        """
+        self._index_map = {}
+        self._rebuild_index_map_partial(start_index=0, start_node=self._head)
+
+    def _rebuild_index_map_partial(self, start_index: int, start_node: Node):
+        """
+        Rebuilds a portion of the index map starting from the given index and node.
+
+        This internal method assumes that the provided start_index and start_node
+        accurately reflect the correct position of the node within the list. It updates
+        self._index_map in place by traversing from start_node and assigning sequential
+        indices starting from start_index.
 
         Args:
-            start_index (int): Index to begin mapping from. Defaults to 0.
-            start_node (Node): Node to begin mapping from. Defaults to the head of the list.
+            start_index (int): The index to begin assigning to start_node.
+            start_node (Node): The node at which to begin rebuilding the index map.
 
-        Notes:
-            If called with default arguments, this clears and fully rebuilds the index map.
-            If called with a custom start_index and start_node, it updates the map from that point forward.
-            In that case, earlier indices may remain stale, so ensure they were already accurate or explicitly updated.
+        NOTE:
+            This method performs no validation of inputs. It is intended for internal use
+            only, where the correctness of inputs can be guaranteed by the calling method.
+            If index map must be fully rebuilt, use the public `rebuild_index_map()` method instead.
         """
-
-        # if rebuilding from scratch, clear self._index_map
-        if start_node == self._head or start_index == 0:
-            self._index_map = {}
-
         current_node = start_node
         index = start_index
 
-        # traverse the list and assign a sequential integer index to each node
         while current_node:
             self._index_map[index] = current_node
             index += 1
@@ -53,11 +60,10 @@ class LinkedList:
         """
         Deletes the index, Node pair from self._index_map. Used when removing a node from the list
         """
-
         deleted_node = self._index_map.pop(index, None)
 
-        if deleted_node.next: # if there are subsequent nodes, an update must be done to the self._index_map
-            self.rebuild_index_map(index, deleted_node.next)
+        if deleted_node.next:  # if there are subsequent nodes, an update must be done to the self._index_map
+            self._rebuild_index_map_partial(index, deleted_node.next)
 
     def _add_node_to_index_map(self, index, node):
         """
@@ -65,8 +71,8 @@ class LinkedList:
         """
         self._index_map[index] = node
 
-        if node.next: # if there are subsequent nodes, an update must be done to the self._index_map
-            self.rebuild_index_map(index + 1, node.next)
+        if node.next:  # if there are subsequent nodes, an update must be done to the self._index_map
+            self._rebuild_index_map_partial(index + 1, node.next)
 
     def validate_index_map(self):
         """
@@ -75,7 +81,7 @@ class LinkedList:
 
         Returns:
             bool: True if the index map is accurate and consistent with the current list structure;
-                  False if there are missing entries or incorrect mappings.
+                  False if there are stale entries, missing entries, or incorrect mappings.
 
         Use Cases:
             - Debugging: Helps detect stale or corrupted index map entries.
@@ -84,11 +90,16 @@ class LinkedList:
         current_node = self._head
         index = 0
 
+        if len(self._index_map) != self._list_length: # if there are a different number of nodes than index mappings
+            return False
+
         while current_node:
             if index not in self._index_map or self._index_map[index] != current_node:
                 return False
             index += 1
             current_node = current_node.next
+
+        return True
 
     def prepend(self, value):
         """
@@ -105,6 +116,8 @@ class LinkedList:
             new_node.next = self._head
             self._head = new_node
 
+        self._list_length += 1
+
     def pop(self):
         """
         Takes the node from the end of the list
@@ -117,7 +130,7 @@ class LinkedList:
         if not self._head.next:
             tail_value = self._head.value
             self._head = None
-
+            self._list_length -= 1
             return tail_value
 
         current_node = self._head
@@ -126,6 +139,7 @@ class LinkedList:
 
         tail_value = current_node.next.value
         current_node.next = None
+        self._list_length -= 1
         return tail_value
 
     def has_cycle(self):
