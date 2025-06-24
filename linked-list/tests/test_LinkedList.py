@@ -416,6 +416,37 @@ class TestLinkedList(unittest.TestCase):
 
         self.assertEqual(str(context.exception), "Cannot reverse a cyclical linked list")
 
+    def test_getitem_non_int_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+        test_list.rebuild_index_map()
+
+        # Act & Assert
+        with self.assertRaises(TypeError) as context:
+            test_list["1"]
+
+        self.assertEqual(str(context.exception), "Index must be an integer.")
+    def test_getitem_out_of_bounds_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+        test_list.rebuild_index_map()
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list[4]
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
+    def test_getitem_valid_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+        test_list.rebuild_index_map()
+
+        # Act
+        result = test_list[0]
+
+        # Assert
+        self.assertEqual(result, "A")
 
 ###### HELPER FUNCTIONS ######
 def create_list_from_values(values):

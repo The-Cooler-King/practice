@@ -277,3 +277,35 @@ class LinkedList:
             current_node = current_node.next
 
         return "LinkedList([" + " -> ".join(node_values) + "])"
+
+    def __len__(self):
+        """
+        The number of nodes in the linked list.
+
+        Returns:
+            int: The length of the list.
+        """
+        return self._list_length
+
+    def __getitem__(self, index: int):
+        """
+        Allows bracket-style indexing into the linked list.
+        Example: my_list[2]
+
+        Args:
+            index (int): The index of the node to retrieve.
+
+        Returns:
+            The value of the node at the given index.
+
+        Raises:
+            IndexError: If the index is out of bounds.
+        """
+        if not isinstance(index, int):
+            raise TypeError("Index must be an integer.")
+
+        if index < 0 or index >= self._list_length:
+            raise IndexError("Index out of bounds.")
+
+        return self._index_map[index].value
+
