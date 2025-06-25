@@ -169,7 +169,7 @@ class LinkedList:
 
     def pop(self):
         """
-        Takes the node from the end of the list
+        Removes the tail node from the list
 
         Return: the value of the removed node
         """
@@ -184,7 +184,7 @@ class LinkedList:
             self._update_list_metadata_for_remove_node(index_of_removed_node=0)
             return tail_node.value
 
-        # Get the index of the last node
+        # Get the index of the tail node
         tail_index = self._list_length - 1
 
         # Use the index map to retrieve the tail and the node just before it

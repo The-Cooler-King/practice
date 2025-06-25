@@ -34,7 +34,7 @@ print(ll.pop())  # 3
 
 ### Key Features
 - `prepend(value)` – Adds a node to the front of the list
-- `pop()` – Removes and returns the last node (O(1) with index map)
+- `pop()` – Removes and returns the tail node (O(1) with index map)
 - `has_cycle()` – Uses Floyd’s Tortoise-Hare algorithm to detect a cycle
 - `find_middle()` – Efficiently finds the middle node of the list
 - `reverse()` – Reverses the list in-place
