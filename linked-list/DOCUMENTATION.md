@@ -1,7 +1,10 @@
 # 📘 Linked List Module Documentation
 
-This module implements a basic singly linked list using two core classes:
+A Python module implementing a custom singly linked list from scratch, with optional index map for O(1) lookups.
+Includes cycle detection, in-place reversal, and iteration support. Designed for learning, testing algorithms,
+and exploring hybrid data structures.
 
+Main Classes:
 - `Node`: Represents an element in the list
 - `LinkedList`: Provides operations for managing a sequence of nodes
 
@@ -48,7 +51,106 @@ print(n2 == n1) # False
 
 Initializes an empty linked list with `head` set to `None`.
 
-#### Methods:
+### Attributes:
+These attributes are internally managed and should not be manipulated externally.
+
+##### `self._head`
+The head node of the list. If the list is empty, self._head will be `None`.
+
+##### `self._index_map`
+The map of indexes paired with their corresponding nodes.
+
+##### `self._length`
+The amount of nodes in the list.
+
+### Dunder Methods:
+
+##### `__len__()`
+Returns the amount of nodes in the list.
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(1)
+ll.prepend(2)
+
+len(ll)  # 2
+```
+---
+
+##### `__iter__()`
+Allows iteration over the linked list using a `for` loop.
+
+###### Raises:
+- `RuntimeError` if list contains a cycle
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(1)
+ll.prepend(2)
+
+for value in ll:
+    print(value)
+# Output: 2, 1
+```
+---
+
+##### `__repr__()`
+Returns a string representation of the list, showing all node values.
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(3)
+ll.prepend(2)
+ll.prepend(1)
+print(ll)  # LinkedList([1 -> 2 -> 3])
+
+ll.pop()
+ll.pop()
+ll.pop()
+print(ll) # Empty List
+```
+
+###### Cycle Safety:
+If a cycle is detected, prints up to the first repeated node and then:
+```python
+LinkedList([1 -> 2 -> 3 -> 1 ... (cycle detected)])
+```
+---
+
+###### `__getitem__(index)`
+Returns the value of the node at the given index.
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(3)
+ll.prepend(2)
+ll.prepend(1)
+
+ll[0]  # 1
+ll[1]  # 2
+ll[2]  # 3
+```
+---
+
+### Public Methods:
+These are supported methods to manipulate, analyze, and examine the LinkedList instance. If only public methods are used
+to manipulate the LinkedList, the user can be assured that the list and its metadata will have reliable integrity.
+
+##### `head()`
+Returns the head node of the list
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(5)
+ll.prepend(10)
+print(ll.head().value)  # 5
+```
+---
 
 ##### `prepend(value)`
 Adds a new node to the front of the list.
@@ -65,8 +167,26 @@ print(ll)  # LinkedList([10 -> 5])
 ```
 ---
 
+##### `classic_pop()`
+Removes and returns the value of the tail node in the list with O(N) time complexity. This method is retained for instructional purposes only. Use `pop()` for production logic.
+
+###### Returns:
+- `value` of the removed node
+- `None` if the list was empty
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(1)
+ll.prepend(2)
+ll.classic_pop()  # 1
+ll.classic_pop()  # 2
+ll.classic_pop()  # None
+```
+---
+
 ##### `pop()`
-Removes and returns the value of the last node in the list.
+Removes and returns the value of the tail node in the list with O(1) time complexity.
 
 ###### Returns:
 - `value` of the removed node
@@ -82,7 +202,6 @@ ll.pop()  # 2
 ll.pop()  # None
 ```
 ---
-
 ##### `is_empty()`
 Returns `True` if the list has no nodes, else `False`.
 
@@ -109,7 +228,7 @@ b = Node(2, a)
 a.next = b  # cycle
 
 ll = LinkedList()
-ll.head = a
+ll._head = a # DO NOT DO THIS. Use public methods to affect the list instance
 ll.has_cycle()  # True
 ```
 ---
@@ -162,43 +281,81 @@ print(ll)  # LinkedList([1 -> 2 -> 3])
 ```
 ---
 
-##### `__iter__()`
-Allows iteration over the linked list using a `for` loop.
+##### `get_node(index)`
+Returns the node object at the given index.
+
+###### Arguments:
+- `index` (int): The position of the node.
+
+###### Returns:
+- The `Node` instance at the given index.
 
 ###### Raises:
-- `RuntimeError` if list contains a cycle
+- `IndexError` if the index is out of bounds.
+- `TypeError` if the index is not an integer.
 
 ###### Examples:
 ```python
 ll = LinkedList()
-ll.prepend(1)
-ll.prepend(2)
-
-for value in ll:
-    print(value)
-# Output: 2, 1
+ll.prepend(10)
+ll.prepend(20)
+node = ll.get_node(1)
+print(node.value)  # 10
 ```
 ---
 
-##### `__repr__()`
-Returns a string representation of the list, showing all node values.
+##### `rebuild_index_map()`
+Clears the current index map, and then traverses the list from head to tail, assigning a index to each node.
 
 ###### Examples:
 ```python
 ll = LinkedList()
-ll.prepend(3)
-ll.prepend(2)
-ll.prepend(1)
-print(ll)  # LinkedList([1 -> 2 -> 3])
+ll.prepend(10)
+ll.prepend(20)
+ll._index_map  # {0: Node(20), 1: Node(10)}
+ll.index_map = {}
 
-ll.pop()
-ll.pop()
-ll.pop()
-print(ll) # Empty List
+ll.rebuild_indes_map()
+ll._index_map  # {0: Node(20), 1: Node(10)}
 ```
+---
 
-###### Cycle Safety:
-If a cycle is detected, prints up to the first repeated node and then:
+##### `validate_index_map()`
+Validates the integrity of the index map by ensuring each indexed node in the map corresponds exactly to the node at that position in the linked list.
+
+###### Returns:
+- __Boolean__: `True` if index map is valid, `False` otherwise
+
+###### Examples:
 ```python
-LinkedList([1 -> 2 -> 3 -> 1 ... (cycle detected)])
+ll = LinkedList()
+ll.prepend(10)
+ll.prepend(20)
+ll._index_map  # {0: Node(20), 1: Node(10)}
+ll.validate_index_map()  # True
+
+ll.index_map = {}
+ll.validate_index_map()  # False
 ```
+---
+
+#### Private Methods:
+
+### 🔧 Internal Methods
+
+#### `_rebuild_index_map_partial(start_index, start_node)`
+Incrementally rebuilds the index map starting from `start_index` and `start_node`.
+
+Use only when it is known that preceding mappings are already correct. If in doubt, use `rebuild_index_map()`.
+
+#### `_add_node_to_index_map(index, node)`
+Adds an entry to the index map and updates mappings for all downstream nodes.
+
+#### `_remove_node_from_index_map(index)`
+Removes the specified index and rebuilds mappings for subsequent nodes if needed.
+
+#### `_increment_list_length()` / `_decrement_list_length()`
+Internal counters for maintaining list length.
+
+#### `_update_list_metadata_for_add_node()` / `_update_list_metadata_for_remove_node()`
+Helper methods that bundle together all index map and length updates for adding or removing nodes.
