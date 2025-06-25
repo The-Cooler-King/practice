@@ -18,6 +18,8 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(repr(test_list), "Empty List")
+        self.assertEqual(len(test_list), 0)
+        self.assertEqual(test_list._index_map, {})
 
     def test_head(self):
         # Arrange
@@ -90,7 +92,6 @@ class TestLinkedList(unittest.TestCase):
     def test_validate_index_map_valid_map(self):
         # Arrange
         test_list = create_list_from_values(["C", "B", "A"])
-        test_list.rebuild_index_map()
 
         # Act & Assert
         self.assertTrue(test_list.validate_index_map())
@@ -98,7 +99,6 @@ class TestLinkedList(unittest.TestCase):
     def test_validate_index_map_stale_index(self):
         # Arrange
         test_list = create_list_from_values(["C", "B", "A"])
-        test_list.rebuild_index_map()
         # pop node_c, but restore it to the index map
         node_c_value = test_list.pop()
         test_list._index_map[2] = Node(node_c_value)
@@ -109,7 +109,6 @@ class TestLinkedList(unittest.TestCase):
     def test_validate_index_map_incorrect_mapping(self):
         # Arrange
         test_list = create_list_from_values(["C", "B", "A"])
-        test_list.rebuild_index_map()
         node_a = test_list.head()
         node_b = node_a.next
         # switch indexes of node_a and node_b
@@ -122,7 +121,6 @@ class TestLinkedList(unittest.TestCase):
     def test_validate_index_map_missing_mapping(self):
         # Arrange
         test_list = create_list_from_values(["C", "B", "A"])
-        test_list.rebuild_index_map()
         test_list._index_map.pop(2)  # get rid of index 2 in the index map
 
         # Act & Assert
@@ -311,18 +309,9 @@ class TestLinkedList(unittest.TestCase):
     def test_repr_list_with_cycle(self):
         # Arrange
         test_list = create_list_from_values(["G", "F", "E", "D", "C", "B", "A"])
-        # traverse list and to get node "B" and node "G"
-        current_node = test_list._head
-        while current_node:
-            if current_node.value == "B":
-                node_B = current_node
-
-            if current_node.value == "G":
-                node_G = current_node
-
-            current_node = current_node.next
-
-        node_G.next = node_B  # set node "G" next to node "B"
+        node_b = test_list.get_node(1)
+        node_g = test_list.get_node(6)
+        node_g.next = node_b  # set node "G" next to node "B"
 
         # Assert
         self.assertEqual(repr(test_list), "LinkedList([A -> B -> C -> D -> E -> F -> G -> B ... (cycle detected)])")
@@ -346,7 +335,7 @@ class TestLinkedList(unittest.TestCase):
         # Arrange
         test_list = LinkedList()
         test_list.prepend("A")
-        test_list._head.next = test_list._head  # set head equal to itself. single node loop
+        test_list._head.next = test_list._head  # set head.next equal to itself. single node loop
 
         # Act & Assert
         self.assertTrue(test_list.has_cycle())
@@ -376,17 +365,8 @@ class TestLinkedList(unittest.TestCase):
     def test_has_cycle_multi_node_list_with_cycle(self):
         # Arrange
         test_list = create_list_from_values(["G", "F", "E", "D", "C", "B", "A"])
-        # traverse list and to get node "B" and node "G"
-        current_node = test_list._head
-        while current_node:
-            if current_node.value == "B":
-                node_b = current_node
-
-            if current_node.value == "G":
-                node_g = current_node
-
-            current_node = current_node.next
-
+        node_b = test_list.get_node(1)
+        node_g = test_list.get_node(6)
         node_g.next = node_b  # set node "G" next to node "B"
 
         # Act & Assert
@@ -480,7 +460,6 @@ class TestLinkedList(unittest.TestCase):
     def test_getitem_non_int_index(self):
         # Arrange
         test_list = create_list_from_values(["D", "C", "B", "A"])
-        test_list.rebuild_index_map()
 
         # Act & Assert
         with self.assertRaises(TypeError) as context:
@@ -491,7 +470,6 @@ class TestLinkedList(unittest.TestCase):
     def test_getitem_out_of_bounds_index(self):
         # Arrange
         test_list = create_list_from_values(["D", "C", "B", "A"])
-        test_list.rebuild_index_map()
 
         # Act & Assert
         with self.assertRaises(IndexError) as context:
@@ -502,7 +480,6 @@ class TestLinkedList(unittest.TestCase):
     def test_getitem_valid_index(self):
         # Arrange
         test_list = create_list_from_values(["D", "C", "B", "A"])
-        test_list.rebuild_index_map()
 
         # Act
         result = test_list[0]
@@ -510,6 +487,36 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(result, "A")
 
+    def test_get_node_non_int_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(TypeError) as context:
+            test_list.get_node("1")
+
+        self.assertEqual(str(context.exception), "Index must be an integer.")
+
+    def test_get_node_out_of_bounds_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list.get_node(4)
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
+    def test_get_node_valid_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+        node_a = test_list._head
+
+        # Act
+        result = test_list.get_node(0)
+
+        # Assert
+        self.assertEqual(result, node_a)
 
 ###### HELPER FUNCTIONS ######
 def create_list_from_values(values):

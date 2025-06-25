@@ -367,3 +367,24 @@ class LinkedList:
             raise IndexError("Index out of bounds.")
 
         return self._index_map[index].value
+
+    def get_node(self, index: int):
+        """
+        Retrieves the node object at an index
+
+        Args:
+            index (int): The index of the node to retrieve.
+
+        Returns:
+            The node at the given index.
+
+        Raises:
+            IndexError: If the index is out of bounds.
+        """
+        if not isinstance(index, int):
+            raise TypeError("Index must be an integer.")
+
+        if index < 0 or index >= self._list_length:
+            raise IndexError("Index out of bounds.")
+
+        return self._index_map[index]
