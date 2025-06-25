@@ -6,6 +6,8 @@ class LinkedList:
         """
         Initializes an empty singly linked list
         Sets the head to None
+        Initializes empty index map
+        Sets list length to 0
         """
         self._head = None
         self._index_map = {}
@@ -45,7 +47,7 @@ class LinkedList:
 
         NOTE:
             This method performs no validation of inputs. It is intended for internal use
-            only, where the correctness of inputs can be guaranteed by the calling method.
+            only, where the correctness of inputs is assumed.
             If index map must be fully rebuilt, use the public `rebuild_index_map()` method instead.
         """
         current_node = start_node
@@ -89,9 +91,9 @@ class LinkedList:
         """
         deleted_node = self._index_map.pop(index, None)
 
-        last_index = self._list_length - 1
-        if index != last_index:  # if the index of the deleted node was not the last index
-            del self._index_map[last_index]  # delete tail node from index_map as it would be stale after rebuild
+        tail_index = self._list_length - 1
+        if index != tail_index:  # if the index of the deleted node was not the tail index
+            del self._index_map[tail_index]  # delete tail node from index_map as it would be stale after rebuild
 
         if deleted_node.next:  # if there are subsequent nodes, an update must be done to the self._index_map
             self._rebuild_index_map_partial(index, deleted_node.next)
@@ -171,21 +173,29 @@ class LinkedList:
 
         Return: the value of the removed node
         """
+        # If the list is empty, there's nothing to remove
         if self.is_empty():
             return None
 
+        # Handle the case where there's only one node in the list
         if self._list_length == 1:
             tail_node = self._head
             self._head = None
             self._update_list_metadata_for_remove_node(index_of_removed_node=0)
             return tail_node.value
 
+        # Get the index of the last node
         tail_index = self._list_length - 1
+
+        # Use the index map to retrieve the tail and the node just before it
         tail_node = self._index_map[tail_index]
         penultimate_node = self._index_map[tail_index - 1]
+
+        # Remove the tail by setting the penultimate node's next to None
         penultimate_node.next = None  # cut the connection to the tail node
 
         self._update_list_metadata_for_remove_node(index_of_removed_node=tail_index)
+
         return tail_node.value
 
     def has_cycle(self):
@@ -204,9 +214,6 @@ class LinkedList:
 
         Return: a boolean indicating whether a cycle exists in the list
         """
-        # if self.is_empty():  # if there are no nodes
-        #     return False
-
         # set both pointers equal to head to get both racers to the starting line
         hare_pointer = self._head
         tortoise_pointer = self._head
@@ -257,16 +264,17 @@ class LinkedList:
         """
         Reverses the order of the nodes in place using 3 pointers
 
-        Explanation:
-            The first pointer is called next_node and points to self._head. The next pointer points to self._head.next
-            and calls it current_node. The final pointer points to self._head.next.next and calls it previous. Now
-            picture that you are physically traversing this list. You stand at head, and turn backwards. Head's pointer
-            now points backwards between your legs to self.next. You flip that pointer around to point at nothing and
-            then you hop back to the next node. You flip that nodes pointer around to point at head. You hop backwards
-            again, and flip that nodes pointer to the one you were just at. So on and so on. This is essentially what is
-            happening, and that is why we need the "next" point: to know where to jump after we have flipped the
-            pointer of the node we are standing on. The first time I encountered this strategy, I was super confused.
-            I wonder if this made it more or less complicated :)
+        Explanation: The first pointer is called current_node and points to self._head. The next pointer points to
+        current_node.next and calls it next_node. The final pointer points to self._head after the pointer has been
+        reversed and calls it previous.
+
+        Now picture that you are physically traversing this list. You stand at head, and turn backwards. Head's
+        pointer now points backwards between your legs to self.next. You flip that pointer around to point at nothing
+        and then you hop back to the next node. You flip that nodes pointer around to point at head. You hop
+        backwards again, and flip that nodes pointer to the one you were just at. So on and so on. This is
+        essentially what is happening, and that is why we need the "next" point: to know where to jump after we have
+        flipped the pointer of the node we are standing on. The first time I encountered this strategy, I was super
+        confused. I wonder if this made it more or less complicated :)
         """
         if self.is_empty() or self._head.next is None:
             return  # Nothing to reverse
@@ -294,6 +302,7 @@ class LinkedList:
         Raises:
             Runtime Error when list has a cycle to prevent endless recursion upon iterating
         """
+        # TODO: optimize this. we cannot be checking in a performance critical method whether or not the list has a cycle. Let a recursion error generate if the user decided to create a cycle in their list
         if self.has_cycle():
             raise RuntimeError("Cannot iterate over a cyclic linked list")
         current_node = self._head
@@ -308,6 +317,7 @@ class LinkedList:
         NOTE:
             If the list has a cycle, the representation only shows up to the first repeat
         """
+        # TODO: should we limit how many nodes will be printed?
         if self.is_empty():
             return "Empty List"
 
@@ -320,7 +330,7 @@ class LinkedList:
                 node_values.append(f"{str(current_node.value)} ... (cycle detected)")
                 break
 
-            # add to node_values list and visted_nodes set and advance to the next node
+            # add to node_values list and visited_nodes set and advance to the next node
             node_values.append(str(current_node.value))
             visited_nodes.add(id(current_node))
             current_node = current_node.next
@@ -357,11 +367,3 @@ class LinkedList:
             raise IndexError("Index out of bounds.")
 
         return self._index_map[index].value
-
-
-"""
-okay so i am thinking we bundle adding and removing nodes from the list into different wrappers
-i probably need to refine that name because the wrapper will not be the one removing the node or adding it,
-the function that calls the wrapper will do that.
-the wrapper will be updating the index map and the list length attribute. 
-"""
