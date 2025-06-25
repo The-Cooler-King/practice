@@ -56,24 +56,6 @@ class LinkedList:
             index += 1
             current_node = current_node.next
 
-    def _remove_node_from_index_map(self, index):
-        """
-        Deletes the index, Node pair from self._index_map. Used when removing a node from the list
-        """
-        deleted_node = self._index_map.pop(index, None)
-
-        if deleted_node.next:  # if there are subsequent nodes, an update must be done to the self._index_map
-            self._rebuild_index_map_partial(index, deleted_node.next)
-
-    def _add_node_to_index_map(self, index, node):
-        """
-        Adds the index, Node pair to self._index_map. Used when adding a node to the list.
-        """
-        self._index_map[index] = node
-
-        if node.next:  # if there are subsequent nodes, an update must be done to the self._index_map
-            self._rebuild_index_map_partial(index + 1, node.next)
-
     def validate_index_map(self):
         """
         Validates the integrity of the index map by ensuring each indexed node in the map corresponds exactly
@@ -90,7 +72,7 @@ class LinkedList:
         current_node = self._head
         index = 0
 
-        if len(self._index_map) != self._list_length: # if there are a different number of nodes than index mappings
+        if len(self._index_map) != self._list_length:  # if there are a different number of nodes than index mappings
             return False
 
         while current_node:
@@ -100,6 +82,45 @@ class LinkedList:
             current_node = current_node.next
 
         return True
+
+    def _remove_node_from_index_map(self, index):
+        """
+        Deletes the index, Node pair from self._index_map. Used when removing a node from the list
+        """
+        deleted_node = self._index_map.pop(index, None)
+
+        last_index = self._list_length - 1
+        if index != last_index:  # if the index of the deleted node was not the last index
+            del self._index_map[last_index]  # delete tail node from index_map as it would be stale after rebuild
+
+        if deleted_node.next:  # if there are subsequent nodes, an update must be done to the self._index_map
+            self._rebuild_index_map_partial(index, deleted_node.next)
+
+    def _add_node_to_index_map(self, index, node):
+        """
+        Adds the index, Node pair to self._index_map. Used when adding a node to the list.
+        """
+        if not node:
+            node = self._head
+
+        self._index_map[index] = node
+
+        if node.next:  # if there are subsequent nodes, an update must be done to the self._index_map
+            self._rebuild_index_map_partial(index + 1, node.next)
+
+    def _increment_list_length(self):
+        self._list_length += 1
+
+    def _decrement_list_length(self):
+        self._list_length -= 1
+
+    def _update_list_metadata_for_add_node(self, index_to_add_node: int = 0, added_node: Node = None):
+        self._add_node_to_index_map(index_to_add_node, added_node)
+        self._increment_list_length()
+
+    def _update_list_metadata_for_remove_node(self, index_of_removed_node: int = 0):
+        self._remove_node_from_index_map(index_of_removed_node)
+        self._decrement_list_length()
 
     def prepend(self, value):
         """
@@ -116,7 +137,7 @@ class LinkedList:
             new_node.next = self._head
             self._head = new_node
 
-        self._list_length += 1
+        self._update_list_metadata_for_add_node()
 
     def pop(self):
         """
@@ -128,19 +149,21 @@ class LinkedList:
             return None
 
         if not self._head.next:
-            tail_value = self._head.value
+            tail_node = self._head
             self._head = None
-            self._list_length -= 1
-            return tail_value
+            self._update_list_metadata_for_remove_node(index_of_removed_node=0)
+            return tail_node.value
 
+        index = 0
         current_node = self._head
         while current_node.next.next:  # stop at the penultimate node
             current_node = current_node.next
+            index += 1
 
-        tail_value = current_node.next.value
+        tail_node = current_node.next
         current_node.next = None
-        self._list_length -= 1
-        return tail_value
+        self._update_list_metadata_for_remove_node(index_of_removed_node=index + 1)
+        return tail_node.value
 
     def has_cycle(self):
         """
@@ -230,11 +253,14 @@ class LinkedList:
         previous_node = None
         current_node = self._head
 
+        index = self._list_length - 1
         while current_node:
             next_node = current_node.next  # store the next node
             current_node.next = previous_node  # reverse the pointer
             previous_node = current_node  # move previous forward
+            self._index_map[index] = current_node  # update the index map
             current_node = next_node  # move current forward
+            index -= 1
 
         self._head = previous_node
 
@@ -309,3 +335,10 @@ class LinkedList:
 
         return self._index_map[index].value
 
+
+"""
+okay so i am thinking we bundle adding and removing nodes from the list into different wrappers
+i probably need to refine that name because the wrapper will not be the one removing the node or adding it,
+the function that calls the wrapper will do that.
+the wrapper will be updating the index map and the list length attribute. 
+"""

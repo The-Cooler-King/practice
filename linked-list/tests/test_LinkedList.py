@@ -64,10 +64,7 @@ class TestLinkedList(unittest.TestCase):
         test_list.rebuild_index_map()
 
         # Assert
-        self.assertEqual(test_list._index_map[0].value, "A")
-        self.assertEqual(test_list._index_map[1].value, "B")
-        self.assertEqual(test_list._index_map[2].value, "C")
-        self.assertEqual(test_list._index_map[3].value, "D")
+        self.assertTrue(test_list.validate_index_map())
 
     def test_rebuild_index_map_empty_list(self):
         # Arrange
@@ -77,21 +74,18 @@ class TestLinkedList(unittest.TestCase):
         test_list.rebuild_index_map()
 
         # Assert
-        with self.assertRaises(KeyError) as context:
-            test_list._index_map[0]
+        self.assertTrue(test_list.validate_index_map())
 
     def test__rebuild_index_map_partial(self):
         # Arrange
         test_list = create_list_from_values(["C", "B", "A"])
         node_b = test_list.head().next
-        node_c = node_b.next
 
         # Act
         test_list._rebuild_index_map_partial(start_index=1, start_node=node_b)
 
         # Assert
-        self.assertEqual(test_list._index_map[1], node_b)
-        self.assertEqual(test_list._index_map[2], node_c)
+        self.assertTrue(test_list.validate_index_map())
 
     def test_validate_index_map_valid_map(self):
         # Arrange
@@ -143,6 +137,8 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(repr(test_list), "LinkedList([5])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 1)
 
     def test_prepend_to_list(self):
         # Arrange
@@ -154,6 +150,8 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(repr(test_list), "LinkedList([6 -> 5])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 2)
 
     def test_pop_node_from_empty_list(self):
         # Arrange
@@ -165,6 +163,8 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertIsNone(pop_value)
         self.assertEqual(repr(test_list), "Empty List")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 0)
 
     def test_pop_node_from_single_node_list(self):
         # Arrange
@@ -176,6 +176,8 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(pop_value, 1)
         self.assertEqual(repr(test_list), "Empty List")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 0)
 
     def test_pop_node_from_two_node_list(self):
         # Arrange
@@ -187,6 +189,8 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(pop_value, 1)
         self.assertEqual(repr(test_list), "LinkedList([2])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 1)
 
     def test_pop_node_from_multiple_node_list(self):
         # Arrange
@@ -198,6 +202,8 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(pop_value, 1)
         self.assertEqual(repr(test_list), "LinkedList([4 -> 3 -> 2])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 3)
 
     def test_iterating_over_list(self):
         # Arrange
@@ -384,6 +390,7 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(repr(test_list), "LinkedList([I -> H -> G -> F -> E -> D -> C -> B -> A])")
+        self.assertTrue(test_list.validate_index_map())
 
     def test_reverse_single_node_list(self):
         # Arrange
@@ -394,6 +401,7 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(repr(test_list), "LinkedList([A])")
+        self.assertTrue(test_list.validate_index_map())
 
     def test_reverse_empty_list(self):
         # Arrange
@@ -404,6 +412,7 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(repr(test_list), "Empty List")
+        self.assertTrue(test_list.validate_index_map())
 
     def test_reverse_cyclical_list(self):
         # Arrange
@@ -426,6 +435,7 @@ class TestLinkedList(unittest.TestCase):
             test_list["1"]
 
         self.assertEqual(str(context.exception), "Index must be an integer.")
+
     def test_getitem_out_of_bounds_index(self):
         # Arrange
         test_list = create_list_from_values(["D", "C", "B", "A"])
@@ -447,6 +457,7 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(result, "A")
+
 
 ###### HELPER FUNCTIONS ######
 def create_list_from_values(values):
