@@ -139,7 +139,7 @@ class LinkedList:
 
         self._update_list_metadata_for_add_node()
 
-    def pop(self):
+    def classic_pop(self):
         """
         Takes the node from the end of the list
 
@@ -163,6 +163,29 @@ class LinkedList:
         tail_node = current_node.next
         current_node.next = None
         self._update_list_metadata_for_remove_node(index_of_removed_node=index + 1)
+        return tail_node.value
+
+    def pop(self):
+        """
+        Takes the node from the end of the list
+
+        Return: the value of the removed node
+        """
+        if self.is_empty():
+            return None
+
+        if self._list_length == 1:
+            tail_node = self._head
+            self._head = None
+            self._update_list_metadata_for_remove_node(index_of_removed_node=0)
+            return tail_node.value
+
+        tail_index = self._list_length - 1
+        tail_node = self._index_map[tail_index]
+        penultimate_node = self._index_map[tail_index - 1]
+        penultimate_node.next = None  # cut the connection to the tail node
+
+        self._update_list_metadata_for_remove_node(index_of_removed_node=tail_index)
         return tail_node.value
 
     def has_cycle(self):

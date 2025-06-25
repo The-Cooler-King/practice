@@ -77,8 +77,26 @@ print(ll)  # LinkedList([10 -> 5])
 ```
 ---
 
+##### `classic_pop()`
+Removes and returns the value of the last node in the list with O(N) time complexity. Not recommended for use.
+
+###### Returns:
+- `value` of the removed node
+- `None` if the list was empty
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(1)
+ll.prepend(2)
+ll.classic_pop()  # 1
+ll.classic_pop()  # 2
+ll.classic_pop()  # None
+```
+---
+
 ##### `pop()`
-Removes and returns the value of the last node in the list.
+Removes and returns the value of the last node in the list with O(1) time complexity. Recommended method.
 
 ###### Returns:
 - `value` of the removed node
@@ -94,7 +112,6 @@ ll.pop()  # 2
 ll.pop()  # None
 ```
 ---
-
 ##### `is_empty()`
 Returns `True` if the list has no nodes, else `False`.
 

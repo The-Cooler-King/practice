@@ -153,6 +153,58 @@ class TestLinkedList(unittest.TestCase):
         self.assertTrue(test_list.validate_index_map())
         self.assertEqual(len(test_list), 2)
 
+    def test_classic_pop_node_from_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        pop_value = test_list.classic_pop()
+
+        # Assert
+        self.assertIsNone(pop_value)
+        self.assertEqual(repr(test_list), "Empty List")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 0)
+
+    def test_classic_pop_node_from_single_node_list(self):
+        # Arrange
+        test_list = create_list_from_values([1])
+
+        # Act
+        pop_value = test_list.classic_pop()
+
+        # Assert
+        self.assertEqual(pop_value, 1)
+        self.assertEqual(repr(test_list), "Empty List")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 0)
+
+    def test_classic_pop_node_from_two_node_list(self):
+        # Arrange
+        test_list = create_list_from_values([1, 2])
+
+        # Act
+        pop_value = test_list.classic_pop()
+
+        # Assert
+        self.assertEqual(pop_value, 1)
+        self.assertEqual(repr(test_list), "LinkedList([2])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 1)
+
+    def test_classic_pop_node_from_multiple_node_list(self):
+        # Arrange
+        test_list = create_list_from_values([1, 2, 3, 4])
+
+        # Act
+        pop_value = test_list.classic_pop()
+
+        # Assert
+        self.assertEqual(pop_value, 1)
+        self.assertEqual(repr(test_list), "LinkedList([4 -> 3 -> 2])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 3)
+
     def test_pop_node_from_empty_list(self):
         # Arrange
         test_list = create_list_from_values([])
