@@ -25,6 +25,25 @@ class LinkedList:
         """
         return self._head is None
 
+    def _validate_index(self, index: int, append_flag: bool = False):
+        """
+        Validates that the index is an integer and within bounds.
+
+        Args:
+            index (int): The index to validate.
+            append_flag (bool): If True, allows index == list_length (e.g., for appending).
+
+        Raises:
+            TypeError: If index is not an integer.
+            IndexError: If index is out of bounds.
+        """
+        if not isinstance(index, int):
+            raise TypeError("Index must be an integer.")
+
+        upper_bound = self._list_length + (1 if append_flag else 0)
+        if index < 0 or index >= upper_bound:
+            raise IndexError("Index out of bounds.")
+
     def rebuild_index_map(self):
         """
         Rebuilds index map from scratch.
@@ -360,11 +379,7 @@ class LinkedList:
         Raises:
             IndexError: If the index is out of bounds.
         """
-        if not isinstance(index, int):
-            raise TypeError("Index must be an integer.")
-
-        if index < 0 or index >= self._list_length:
-            raise IndexError("Index out of bounds.")
+        self._validate_index(index=index)
 
         return self._index_map[index].value
 
@@ -381,8 +396,7 @@ class LinkedList:
         Raises:
             IndexError: If the index is out of bounds.
         """
-        if index < 0 or index >= self._list_length:
-            raise IndexError("Index out of bounds.")
+        self._validate_index(index=index)
 
         return self._index_map[index]
 
@@ -397,10 +411,7 @@ class LinkedList:
         Raises:
             IndexError: If the index is out of bounds.
         """
-        if isinstance(index, int):
-            raise TypeError
-        if index not in self._index_map:
-            raise IndexError("No node at this index.")
+        self._validate_index(index=index)
 
         self._index_map[index].value = value
 
@@ -415,14 +426,14 @@ class LinkedList:
         Raises:
             IndexError: If the index is out of bounds.
         """
+        self._validate_index(index=index, append_flag=True)
+
         if index == 0:
             self.prepend(value)
             return
         elif index == self._list_length:
             self.append(value)
             return
-        elif index < 0 or index > self._list_length:
-            raise IndexError("Index out of bounds.")
 
         preceding_node = self._index_map[index - 1]
         node_to_insert = Node(value)
@@ -464,8 +475,7 @@ class LinkedList:
         if self.is_empty():
             raise IndexError("Cannot remove from an empty list.")
 
-        if index not in self._index_map:
-            raise IndexError("No node at this index.")
+        self._validate_index(index=index)
 
         if index == 0:
             self._head = self._head.next

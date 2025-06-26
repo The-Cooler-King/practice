@@ -518,6 +518,64 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(result, node_a)
 
+    def test_validate_index_valid_no_append_flag(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        for index in range(4):
+            test_list._validate_index(index)
+        # none of the indexes should raise
+
+    def test_validate_index_valid_append_flag(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        for index in range(5):
+            test_list._validate_index(index, True)
+        # none of the indexes should raise
+
+    def test_validate_index_invalid_type(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(TypeError) as context:
+            test_list._validate_index("A")
+
+        self.assertEqual(str(context.exception), "Index must be an integer.")
+
+    def test_validate_index_negative_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list._validate_index(-1)
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
+    def test_validate_index_too_high_index_no_append(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list._validate_index(4)
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
+    def test_validate_index_too_high_index_append(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list._validate_index(5)
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
 ###### HELPER FUNCTIONS ######
 def create_list_from_values(values):
     linked_list = LinkedList()
