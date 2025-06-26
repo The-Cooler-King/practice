@@ -54,14 +54,9 @@ Initializes an empty linked list with `head` set to `None`.
 ### Attributes:
 These attributes are internally managed and should not be manipulated externally.
 
-##### `self._head`
-The head node of the list. If the list is empty, self._head will be `None`.
-
-##### `self._index_map`
-The map of indexes paired with their corresponding nodes.
-
-##### `self._length`
-The amount of nodes in the list.
+- `self._head`: The head node of the list. If the list is empty, self._head will be `None`.
+- `self._index_map`: The map of indexes paired with their corresponding nodes.
+- `self._length`: The amount of nodes in the list.
 
 ### Dunder Methods:
 
