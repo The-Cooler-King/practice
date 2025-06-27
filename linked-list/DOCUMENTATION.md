@@ -131,6 +131,22 @@ ll[2]  # 3
 ```
 ---
 
+###### `__setitem__(index, value)`
+Sets the value of the node at the given index.
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(3)
+ll.prepend(2)
+ll.prepend(1)
+
+ll[1]  # 2
+ll[1] = 4
+ll[1]  # 4
+```
+---
+
 ### Public Methods:
 These are supported methods to manipulate, analyze, and examine the LinkedList instance. If only public methods are used
 to manipulate the LinkedList, the user can be assured that the list and its metadata will have reliable integrity.
@@ -334,6 +350,59 @@ ll.validate_index_map()  # False
 ```
 ---
 
+##### `insert(index, value)`
+Inserts a new node with the given value at the specified index.
+
+###### Arguments:
+- `index`: (int) The index at which to insert the node.
+- `value`: The value to store in the new node
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(10)
+ll.prepend(20)
+ll.prepend(30)
+repr(ll)  # LinkedList([30 -> 20 -> 10])
+
+ll.insert(index=2, value=15) # LinkedList([30 -> 20 -> 15 -> 10])
+```
+---
+
+##### `append(value)`
+Removes the node at the specified index.
+
+###### Arguments:
+- `value`: The value to store in the appended node
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.append(10)
+ll.append(20)
+ll.append(30)
+repr(ll)  # LinkedList([10 -> 20 -> 30])
+```
+---
+
+##### `remove(index, value)`
+Removes the node at the specified index.
+
+###### Arguments:
+- `index`: (int) The index at which to remove the node.
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(10)
+ll.prepend(20)
+ll.prepend(30)
+repr(ll)  # LinkedList([30 -> 20 -> 10])
+
+ll.remove(index=1) # LinkedList([30 -> 10])
+```
+---
+
 #### Private Methods:
 
 ### 🔧 Internal Methods
@@ -354,3 +423,6 @@ Internal counters for maintaining list length.
 
 #### `_update_list_metadata_for_add_node()` / `_update_list_metadata_for_remove_node()`
 Helper methods that bundle together all index map and length updates for adding or removing nodes.
+
+#### `_validate_index()`
+Helper methods that ensures index is an integer and within the bounds. Used to validate index at the start of public methods that take index as an arg.
