@@ -54,14 +54,9 @@ Initializes an empty linked list with `head` set to `None`.
 ### Attributes:
 These attributes are internally managed and should not be manipulated externally.
 
-##### `self._head`
-The head node of the list. If the list is empty, self._head will be `None`.
-
-##### `self._index_map`
-The map of indexes paired with their corresponding nodes.
-
-##### `self._length`
-The amount of nodes in the list.
+- `self._head`: The head node of the list. If the list is empty, self._head will be `None`.
+- `self._index_map`: The map of indexes paired with their corresponding nodes.
+- `self._length`: The amount of nodes in the list.
 
 ### Dunder Methods:
 
@@ -133,6 +128,22 @@ ll.prepend(1)
 ll[0]  # 1
 ll[1]  # 2
 ll[2]  # 3
+```
+---
+
+###### `__setitem__(index, value)`
+Sets the value of the node at the given index.
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(3)
+ll.prepend(2)
+ll.prepend(1)
+
+ll[1]  # 2
+ll[1] = 4
+ll[1]  # 4
 ```
 ---
 
@@ -339,6 +350,59 @@ ll.validate_index_map()  # False
 ```
 ---
 
+##### `insert(index, value)`
+Inserts a new node with the given value at the specified index.
+
+###### Arguments:
+- `index`: (int) The index at which to insert the node.
+- `value`: The value to store in the new node
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(10)
+ll.prepend(20)
+ll.prepend(30)
+repr(ll)  # LinkedList([30 -> 20 -> 10])
+
+ll.insert(index=2, value=15) # LinkedList([30 -> 20 -> 15 -> 10])
+```
+---
+
+##### `append(value)`
+Removes the node at the specified index.
+
+###### Arguments:
+- `value`: The value to store in the appended node
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.append(10)
+ll.append(20)
+ll.append(30)
+repr(ll)  # LinkedList([10 -> 20 -> 30])
+```
+---
+
+##### `remove(index, value)`
+Removes the node at the specified index.
+
+###### Arguments:
+- `index`: (int) The index at which to remove the node.
+
+###### Examples:
+```python
+ll = LinkedList()
+ll.prepend(10)
+ll.prepend(20)
+ll.prepend(30)
+repr(ll)  # LinkedList([30 -> 20 -> 10])
+
+ll.remove(index=1) # LinkedList([30 -> 10])
+```
+---
+
 #### Private Methods:
 
 ### 🔧 Internal Methods
@@ -359,3 +423,6 @@ Internal counters for maintaining list length.
 
 #### `_update_list_metadata_for_add_node()` / `_update_list_metadata_for_remove_node()`
 Helper methods that bundle together all index map and length updates for adding or removing nodes.
+
+#### `_validate_index()`
+Helper methods that ensures index is an integer and within the bounds. Used to validate index at the start of public methods that take index as an arg.

@@ -25,6 +25,25 @@ class LinkedList:
         """
         return self._head is None
 
+    def _validate_index(self, index: int, append_flag: bool = False):
+        """
+        Validates that the index is an integer and within bounds.
+
+        Args:
+            index (int): The index to validate.
+            append_flag (bool): If True, allows index == list_length (e.g., for appending).
+
+        Raises:
+            TypeError: If index is not an integer.
+            IndexError: If index is out of bounds.
+        """
+        if not isinstance(index, int):
+            raise TypeError("Index must be an integer.")
+
+        upper_bound = self._list_length + (1 if append_flag else 0)
+        if index < 0 or index >= upper_bound:
+            raise IndexError("Index out of bounds.")
+
     def rebuild_index_map(self):
         """
         Rebuilds index map from scratch.
@@ -360,11 +379,7 @@ class LinkedList:
         Raises:
             IndexError: If the index is out of bounds.
         """
-        if not isinstance(index, int):
-            raise TypeError("Index must be an integer.")
-
-        if index < 0 or index >= self._list_length:
-            raise IndexError("Index out of bounds.")
+        self._validate_index(index=index)
 
         return self._index_map[index].value
 
@@ -381,10 +396,93 @@ class LinkedList:
         Raises:
             IndexError: If the index is out of bounds.
         """
-        if not isinstance(index, int):
-            raise TypeError("Index must be an integer.")
-
-        if index < 0 or index >= self._list_length:
-            raise IndexError("Index out of bounds.")
+        self._validate_index(index=index)
 
         return self._index_map[index]
+
+    def __setitem__(self, index: int, value):
+        """
+        Sets the value of the node at the specified index.
+
+        Args:
+            index (int): The index of the node to update.
+            value: The new value to assign to the node.
+
+        Raises:
+            IndexError: If the index is out of bounds.
+        """
+        self._validate_index(index=index)
+
+        self._index_map[index].value = value
+
+    def insert(self, index: int, value):
+        """
+        Inserts a new node with the given value at the specified index.
+
+        Args:
+            index (int): The index at which to insert the node.
+            value: The value to store in the new node.
+
+        Raises:
+            IndexError: If the index is out of bounds.
+        """
+        self._validate_index(index=index, append_flag=True)
+
+        if index == 0:
+            self.prepend(value)
+            return
+        elif index == self._list_length:
+            self.append(value)
+            return
+
+        preceding_node = self._index_map[index - 1]
+        node_to_insert = Node(value)
+        subsequent_node = preceding_node.next
+
+        preceding_node.next = node_to_insert
+        node_to_insert.next = subsequent_node
+
+        self._update_list_metadata_for_add_node(index_to_add_node=index, added_node=node_to_insert)
+
+    def append(self, value):
+        """
+        Appends a new node with the given value to the end of the list.
+
+        Args:
+            value: The value to store in the new node.
+        """
+        if self.is_empty():
+            self.prepend(value)
+            return
+
+        node_to_append = Node(value)
+        tail_node = self._index_map[self._list_length - 1]
+
+        tail_node.next = node_to_append
+
+        self._update_list_metadata_for_add_node(index_to_add_node=self._list_length, added_node=node_to_append)
+
+    def remove(self, index: int):
+        """
+        Removes the node at the specified index from the list.
+
+        Args:
+            index (int): The index of the node to remove.
+
+        Raises:
+            IndexError: If the index is out of bounds.
+        """
+        if self.is_empty():
+            raise IndexError("Cannot remove from an empty list.")
+
+        self._validate_index(index=index)
+
+        if index == 0:
+            self._head = self._head.next
+        else:
+            node_to_remove = self._index_map[index]
+            preceding_node = self._index_map[index - 1]
+            subsequent_node = node_to_remove.next
+            preceding_node.next = subsequent_node
+
+        self._update_list_metadata_for_remove_node(index_of_removed_node=index)

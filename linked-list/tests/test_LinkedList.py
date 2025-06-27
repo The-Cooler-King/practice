@@ -518,6 +518,206 @@ class TestLinkedList(unittest.TestCase):
         # Assert
         self.assertEqual(result, node_a)
 
+    def test_validate_index_valid_no_append_flag(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        for index in range(4):
+            test_list._validate_index(index)
+        # none of the indexes should raise
+
+    def test_validate_index_valid_append_flag(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        for index in range(5):
+            test_list._validate_index(index, True)
+        # none of the indexes should raise
+
+    def test_validate_index_invalid_type(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(TypeError) as context:
+            test_list._validate_index("A")
+
+        self.assertEqual(str(context.exception), "Index must be an integer.")
+
+    def test_validate_index_negative_index(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list._validate_index(-1)
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
+    def test_validate_index_too_high_index_no_append(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list._validate_index(4)
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
+    def test_validate_index_too_high_index_append(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list._validate_index(5)
+
+        self.assertEqual(str(context.exception), "Index out of bounds.")
+
+    def test_insert_at_head(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.insert(index=0, value="test")
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([test -> A -> B -> C -> D])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 5)
+
+    def test_insert_at_middle(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.insert(index=1, value="test")
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A -> test -> B -> C -> D])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 5)
+
+    def test_insert_at_tail(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.insert(index=3, value="test")
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A -> B -> C -> test -> D])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 5)
+
+    def test_insert_after_tail(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.insert(index=4, value="test")
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A -> B -> C -> D -> test])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 5)
+
+    def test_insert_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        test_list.insert(index=0, value="test")
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([test])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 1)
+
+    def test_remove_head(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.remove(index=0)
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([B -> C -> D])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 3)
+
+    def test_remove_middle_node(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.remove(index=1)
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A -> C -> D])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 3)
+
+    def test_remove_tail(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.remove(index=3)
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A -> B -> C])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 3)
+
+    def test_remove_from_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act & Assert
+        with self.assertRaises(IndexError) as context:
+            test_list.remove(index=0)
+
+        self.assertEqual(str(context.exception), "Cannot remove from an empty list.")
+
+    def test_setitem(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list[1] = "new value"
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A -> new value -> C -> D])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 4)
+
+    def test_append(self):
+        # Arrange
+        test_list = create_list_from_values(["D", "C", "B", "A"])
+
+        # Act
+        test_list.append("test")
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A -> B -> C -> D -> test])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 5)
+
+    def test_append_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        test_list.append("test")
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([test])")
+        self.assertTrue(test_list.validate_index_map())
+        self.assertEqual(len(test_list), 1)
+
 ###### HELPER FUNCTIONS ######
 def create_list_from_values(values):
     linked_list = LinkedList()
