@@ -240,7 +240,7 @@ class TestLinkedList(unittest.TestCase):
         with self.assertRaises(IndexError) as context:
             test_list.remove(index=0)
 
-        self.assertEqual(str(context.exception), "Index out of bounds. List is empty.")
+        self.assertEqual("Cannot remove from an empty list.", str(context.exception))
 
     def test_append(self):
         # Arrange
@@ -261,6 +261,36 @@ class TestLinkedList(unittest.TestCase):
 
         # Assert
         self.assertEqual(repr(test_list), "LinkedList([test])")
+
+    def test_reverse_full_list(self):
+        # Arrange
+        test_list = create_list_from_values(["I", "H", "G", "F", "E", "D", "C", "B", "A"])
+
+        # Act
+        test_list.reverse()
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([I -> H -> G -> F -> E -> D -> C -> B -> A])")
+
+    def test_reverse_single_node_list(self):
+        # Arrange
+        test_list = create_list_from_values(["A"])
+
+        # Act
+        test_list.reverse()
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([A])")
+
+    def test_reverse_empty_list(self):
+        # Arrange
+        test_list = create_list_from_values([])
+
+        # Act
+        test_list.reverse()
+
+        # Assert
+        self.assertEqual(repr(test_list), "LinkedList([])")
 
 
 ###### HELPER FUNCTIONS ######

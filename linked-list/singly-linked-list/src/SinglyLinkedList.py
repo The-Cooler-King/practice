@@ -19,14 +19,14 @@ class SinglyLinkedList:
             return
 
         current_node = self.head
-        while current_node.next:  # stop on the tail node
+        while current_node.next:  # Traverse to the tail node
             current_node = current_node.next
 
         current_node.next = new_node
 
     def prepend(self, value):
         """
-        Adds a new node with the given value to the front of the list.
+        Inserts a new node with the given value at the beginning of the list.
 
         Args:
             value: The value to store in the new node.
@@ -51,7 +51,7 @@ class SinglyLinkedList:
             return value
 
         current_node = self.head
-        while current_node.next.next:  # stop at the penultimate node
+        while current_node.next.next:  # Stop at the penultimate node
             current_node = current_node.next
 
         value = current_node.next.value
@@ -63,12 +63,12 @@ class SinglyLinkedList:
         Inserts a new node with the given value at the specified index.
 
         Args:
-            index (int): Position to insert the new node.
+            index (int): Position at which to insert the new node.
             value: The value to store in the new node.
 
         Raises:
-            IndexError: If the index is out of bounds.
             TypeError: If the index is not an integer.
+            IndexError: If the index is negative or out of bounds.
         """
         if not isinstance(index, int):
             raise TypeError("Index must be an integer.")
@@ -104,15 +104,15 @@ class SinglyLinkedList:
             index (int): The index of the node to remove.
 
         Raises:
-            IndexError: If the index is out of bounds or the list is empty.
             TypeError: If the index is not an integer.
+            IndexError: If the index is negative, out of bounds, or the list is empty.
         """
         if not isinstance(index, int):
             raise TypeError("Index must be an integer.")
         if index < 0:
             raise IndexError("Index out of bounds.")
         if not self.head:
-            raise IndexError("Index out of bounds. List is empty.")
+            raise IndexError("Cannot remove from an empty list.")
 
         if index == 0:
             self.head = self.head.next
@@ -133,9 +133,27 @@ class SinglyLinkedList:
             raise IndexError("Index out of bounds.")
         previous_node.next = current_node.next
 
+    def reverse(self):
+        """
+        Reverses the linked list in-place.
+        """
+        if not self.head or not self.head.next:
+            return
+
+        previous_node = None
+        current_node = self.head
+
+        while current_node:
+            next_node = current_node.next
+            current_node.next = previous_node
+            previous_node = current_node
+            current_node = next_node
+
+        self.head = previous_node
+
     def __getitem__(self, index):
         """
-        Allows bracket-style indexing into the linked list.
+        Retrieves the value at the specified index using bracket notation.
 
         Args:
             index (int): The index of the node to retrieve.
@@ -144,8 +162,8 @@ class SinglyLinkedList:
             The value of the node at the given index.
 
         Raises:
-            IndexError: If the index is out of bounds.
             TypeError: If the index is not an integer.
+            IndexError: If the index is negative or out of bounds.
         """
         if not isinstance(index, int):
             raise TypeError("Index must be an integer.")
@@ -165,7 +183,7 @@ class SinglyLinkedList:
 
     def __iter__(self):
         """
-        Allows iteration over the linked list values.
+        Allows iteration over the values in the linked list.
         """
         current_node = self.head
         while current_node:
@@ -179,8 +197,8 @@ class SinglyLinkedList:
         if not self.head:
             return "LinkedList([])"
 
-        current_node = self.head
         node_values = []
+        current_node = self.head
 
         while current_node:
             node_values.append(str(current_node.value))
