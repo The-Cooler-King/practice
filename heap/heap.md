@@ -67,6 +67,21 @@ heap.insert(1)
 print(heap._data) # Output: [1, 5, 15, 22, 20]
 ```
 ---
+### `.peek()`
+Returns the smallest element of the list without removing
+
+### Example
+```python
+heap = Heap()
+heap.insert(20)
+heap.insert(5)
+heap.insert(15)
+heap.insert(22)
+heap.insert(1)
+
+print(heap.peek()) # Output: 1
+```
+---
 ## Private Methods
 - `_bubble_up(index)`
   - Bubble up (aka Sift Up or Percolate Up) is the process of restoring the min-heap property after a new element is added to the heap

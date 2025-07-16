@@ -30,3 +30,16 @@ class Heap:
             # calculate the new parent_index
             parent_index = (index - 1) // 2
 
+    def peek(self):
+        """
+        Return the smallest element in the heap without removing it
+
+        Return
+            root: the value of the smallest element of the heap
+        """
+
+        if not self._data:
+            return None
+
+        return self._data[0]
+
