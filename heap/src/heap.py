@@ -32,10 +32,10 @@ class Heap:
 
     def peek(self):
         """
-        Return the smallest element in the heap without removing it
+        Return the smallest element in the heap without removing it.
 
-        Return
-            root: the value of the smallest element of the heap
+        Returns:
+            The value of the smallest element (the root), or None if the heap is empty.
         """
 
         if not self._data:

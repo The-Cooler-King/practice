@@ -88,7 +88,7 @@ class TestHeapInsert(unittest.TestCase):
         # Assert
         self.assertEqual(1, smallest_value)
 
-    def test_peek_multiple_element(self):
+    def test_peek_multiple_elements(self):
         # Arrange
         heap = Heap()
         values = [20, 5, 15, 22, 1]
@@ -100,6 +100,19 @@ class TestHeapInsert(unittest.TestCase):
 
         # Assert
         self.assertEqual(1, smallest_value)
+
+    def test_peek_does_not_remove_element(self):
+        # Arrange
+        heap = Heap()
+        heap.insert(3)
+        peeked = heap.peek()
+
+        # Act
+        still_peeked = heap.peek()
+
+        # Assert
+        self.assertEqual(peeked, still_peeked)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -68,11 +68,14 @@ print(heap._data) # Output: [1, 5, 15, 22, 20]
 ```
 ---
 ### `.peek()`
-Returns the smallest element of the list without removing
+Returns the smallest element of the heap without removing
 
 ### Example
 ```python
 heap = Heap()
+
+print(heap().peek()) # Output: None
+
 heap.insert(20)
 heap.insert(5)
 heap.insert(15)
