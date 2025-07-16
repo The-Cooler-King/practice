@@ -19,7 +19,7 @@ class TestHeapInsert(unittest.TestCase):
         heap.insert(10)
 
         # Assert
-        self.assertEqual(heap._data, [10])
+        self.assertEqual([10], heap._data)
 
     def test_insert_multiple_values_maintains_min_heap(self):
         # Arrange
@@ -32,18 +32,16 @@ class TestHeapInsert(unittest.TestCase):
 
         # Assert
         # The smallest value should bubble up to index 0
-        self.assertEqual(heap._data[0], min(values))
+        self.assertEqual(min(values), heap._data[0])
 
     def test_insert_maintains_order_for_heap_property(self):
         # Arrange
         heap = Heap()
+        values = [20, 5, 15, 22, 1]
 
         # Act
-        heap.insert(20)
-        heap.insert(5)
-        heap.insert(15)
-        heap.insert(22)
-        heap.insert(1)
+        for val in values:
+            heap.insert(val)
 
         # Assert
         # Check that the heap property holds at each parent node
@@ -66,8 +64,54 @@ class TestHeapInsert(unittest.TestCase):
             heap.insert(val)
 
         # Assert
-        self.assertEqual(heap._data[0], 2)
-        self.assertEqual(sorted(heap._data), sorted(values))
+        self.assertEqual(2, heap._data[0])
+        self.assertEqual(sorted(values), sorted(heap._data))
+
+    def test_peek_empty_heap(self):
+        # Arrange
+        heap = Heap()
+
+        # Act
+        smallest_value = heap.peek()
+
+        # Assert
+        self.assertIsNone(smallest_value)
+
+    def test_peek_single_element(self):
+        # Arrange
+        heap = Heap()
+        heap.insert(1)
+
+        # Act
+        smallest_value = heap.peek()
+
+        # Assert
+        self.assertEqual(1, smallest_value)
+
+    def test_peek_multiple_elements(self):
+        # Arrange
+        heap = Heap()
+        values = [20, 5, 15, 22, 1]
+        for val in values:
+            heap.insert(val)
+
+        # Act
+        smallest_value = heap.peek()
+
+        # Assert
+        self.assertEqual(1, smallest_value)
+
+    def test_peek_does_not_remove_element(self):
+        # Arrange
+        heap = Heap()
+        heap.insert(3)
+        peeked = heap.peek()
+
+        # Act
+        still_peeked = heap.peek()
+
+        # Assert
+        self.assertEqual(peeked, still_peeked)
 
 
 if __name__ == '__main__':
