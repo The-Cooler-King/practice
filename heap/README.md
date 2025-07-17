@@ -27,7 +27,7 @@ print(heap._data)  # []
 
 ## Development Plan
 1. ✅ Initialize the Heap class with an empty internal container.
-2. ⏳ Add basic heap operations (insert, extract_min, peek, etc.).
+2. ⏳ Add basic heap operations (push, pop, peek, etc.).
 3. ⏳ Add internal helper methods (e.g., _heapify_up, _heapify_down).
 4. ⏳ Add support for max-heap toggle
 5. ⏳ Benchmark against heapq
