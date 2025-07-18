@@ -10,6 +10,40 @@ from heap import Heap
 
 
 class TestHeap(unittest.TestCase):
+    def test_min_heap_property_on_init(self):
+        # Act
+        heap = Heap([9, 2, 7, 4, 1, 6, 5, 8, 3])
+
+        # Assert
+        for i in range(len(heap._data)):
+            left = 2 * i + 1
+            right = 2 * i + 2
+
+            if left < len(heap._data):
+                self.assertLessEqual(
+                    heap._data[i], heap._data[left],
+                    f"Heap property violated: parent {heap._data[i]} > left child {heap._data[left]} at index {i}"
+                )
+
+            if right < len(heap._data):
+                self.assertLessEqual(
+                    heap._data[i], heap._data[right],
+                    f"Heap property violated: parent {heap._data[i]} > right child {heap._data[right]} at index {i}"
+                )
+
+    def test_empty_heap_init(self):
+        # Act
+        heap = Heap()
+
+        # Assert
+        self.assertEqual(heap._data, [])
+
+    def test_single_element_heap_init(self):
+        # Act
+        heap = Heap([42])
+
+        # Assert
+        self.assertEqual(heap._data, [42])
 
     def test_push_single_value(self):
         # Arrange
@@ -79,8 +113,7 @@ class TestHeap(unittest.TestCase):
 
     def test_peek_single_element(self):
         # Arrange
-        heap = Heap()
-        heap.push(1)
+        heap = Heap([1])
 
         # Act
         smallest_value = heap.peek()
@@ -90,10 +123,7 @@ class TestHeap(unittest.TestCase):
 
     def test_peek_multiple_elements(self):
         # Arrange
-        heap = Heap()
-        values = [20, 5, 15, 22, 1]
-        for val in values:
-            heap.push(val)
+        heap = Heap([20, 5, 15, 22, 1])
 
         # Act
         smallest_value = heap.peek()
@@ -103,8 +133,7 @@ class TestHeap(unittest.TestCase):
 
     def test_peek_does_not_remove_element(self):
         # Arrange
-        heap = Heap()
-        heap.push(3)
+        heap = Heap([3])
         peeked = heap.peek()
 
         # Act
@@ -115,9 +144,7 @@ class TestHeap(unittest.TestCase):
 
     def test_pop_returns_smallest(self):
         # Arrange
-        heap = Heap()
-        for value in [5, 3, 8, 1, 4]:
-            heap.push(value)
+        heap = Heap([5, 3, 8, 1, 4])
 
         # Act
         result = heap.pop()
@@ -127,9 +154,7 @@ class TestHeap(unittest.TestCase):
 
     def test_pop_multiple_times_returns_sorted_values(self):
         # Arrange
-        heap = Heap()
-        for value in [5, 3, 8, 1, 4]:
-            heap.push(value)
+        heap = Heap([5, 3, 8, 1, 4])
 
         # Act
         popped_values = [heap.pop() for _ in range(5)]
@@ -149,9 +174,7 @@ class TestHeap(unittest.TestCase):
 
     def test_heap_property_after_pop(self):
         # Arrange
-        heap = Heap()
-        for value in [5, 3, 8, 1, 4]:
-            heap.push(value)
+        heap = Heap([5, 3, 8, 1, 4])
 
         # Act
         heap.pop()
@@ -167,8 +190,7 @@ class TestHeap(unittest.TestCase):
 
     def test_pop_single_element_then_empty(self):
         # Arrange
-        heap = Heap()
-        heap.push(10)
+        heap = Heap([10])
 
         # Act
         first_pop = heap.pop()

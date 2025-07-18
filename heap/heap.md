@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `Heap` class implements a min-heap using a Python list as the internal data container. This version initializes an empty heap and lays the foundation for future heap operations.
+The `Heap` class implements a min-heap using a Python list as the internal data container. This version initializes a list of values as a heap and provides heap operations.
 
 The heap uses **0-based indexing** for internal structure.
 
@@ -13,9 +13,9 @@ The heap uses **0-based indexing** for internal structure.
 ### Constructor
 
 ```python
-class Heap:
-    def __init__(self):
-        self._data = []
+def __init__(self, list_of_values=None):
+    self._data = list(list_of_values) if list_of_values is not None else []
+    self._heapify()
 ```
 ---
 
@@ -24,8 +24,11 @@ class Heap:
 ```python
 from heap import Heap
 
-heap = Heap()
-print(heap._data)  # Output: []
+empty_heap = Heap()
+print(empty_heap._data)  # Output: []
+
+populated_heap = Heap([3, 7, 1, 5, 10])
+print(populated_heap._data) # Output: [1, 5, 3, 7, 10]
 ```
 ---
 
@@ -91,12 +94,7 @@ Removes the minimum element from the heap, returns its value, and restores min-h
 
 ### Example
 ```python
-heap = Heap()
-heap.push(20)
-heap.push(5)
-heap.push(15)
-heap.push(22)
-heap.push(1)
+heap = Heap([20, 5, 15, 22, 1])
 
 print(heap._data) # Output: [1, 5, 15, 22, 20]
 print(heap.pop()) # Output: 1
@@ -122,11 +120,15 @@ print(heap._data) # Output: [5, 20, 15, 22]
       - It reaches a leaf node (i.e., has no children)
     - This process ensures that the smallest values "sink down" toward the leaves, preserving the min-heap invariant: **Every parent node is less than or equal to its children**
 
+`_heapify()`
+- Heapify allows the conversion of a list of values into a valid binary tree representation of a heap.
+  - Since `.push(value)` operates with time complexity O(log n), simply pushing all the list values onto the heap would result in time complexity O(n log n)
+  - To optimize this operation, _bubble_down can be used on all the parent nodes in the binary tree, making the heap valid from leaf nodes up to the root
+  - To find the last parent: `(n - 2) // 2`
+
 ## Development Notes
 
 - This is a **min-heap** by default.
-- `_data` is currently a public-facing attribute for transparency during development.
-- A full API will eventually abstract away direct access to `_data`.
 
 ## Lessons Learned
 
@@ -150,6 +152,25 @@ Further observations:
   - local variables
   - the return address
   - arguments
+
+### Mutable Default Arguments
+Python is a excellent language because it allows you to create quickly, but at the cost of making a lot of hidden decisions on behalf of the user.
+Out of sight, out of mind. When Python is working so hard in the background to pave the way, the implications of these decisions often sneak up and bite you.
+
+I just learned that using mutable default arguments nearly guarantees unwanted behavior.
+```python
+def mutate_list(my_list = []):
+    my_list.append("wow")
+    return my_list
+
+print(mutate_list()) # Output: ['wow']
+print(mutate_list()) # Output: ['wow', 'wow']
+print(mutate_list([1, 2, 3])) # Output: [1, 2, 3, 'wow']
+print(mutate_list()) # Output: ['wow', 'wow', 'wow']
+```
+At the moment of the function definition, the mutable default list is created. It is not recreated per function call. We can see from the behavior that a list is shared by all the function calls which use the default argument.
+
+Mutable refers to anything that can be changed in place. E.g. `list`, `dict`, `set`, `bytearray`
 
 ---
 

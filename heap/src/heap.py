@@ -1,6 +1,7 @@
 class Heap:
-    def __init__(self):
-        self._data = []
+    def __init__(self, list_of_values=None):
+        self._data = list(list_of_values) if list_of_values is not None else []
+        self._heapify()
 
     def push(self, value):
         """
@@ -91,3 +92,15 @@ class Heap:
 
             self._data[index], self._data[smallest] = self._data[smallest], self._data[index]
             index = smallest
+
+    def _heapify(self):
+        """
+        Convert a list of values into a heap
+
+        Args
+            list: a list of values to be converted into a heap
+        """
+        last_parent = (len(self._data) - 2) // 2
+
+        for index in reversed(range(last_parent + 1)):
+            self._bubble_down(index)
