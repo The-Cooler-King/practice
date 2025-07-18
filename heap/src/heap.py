@@ -95,10 +95,8 @@ class Heap:
 
     def _heapify(self):
         """
-        Convert a list of values into a heap
-
-        Args
-            list: a list of values to be converted into a heap
+        Rearranges the internal list (_data) in-place to satisfy the min-heap property.
+        This uses a bottom-up approach for O(n) performance.
         """
         last_parent = (len(self._data) - 2) // 2
 
