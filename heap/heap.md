@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `Heap` class implements a min-heap using a Python list as the internal data container. This version initializes a list of values as a heap and provides heap operations.
+The `Heap` class implements a min-heap or max heap using a Python list as the internal data container. This version initializes a list of values as a heap and provides heap operations.
 
 The heap uses **0-based indexing** for internal structure.
 
@@ -13,8 +13,15 @@ The heap uses **0-based indexing** for internal structure.
 ### Constructor
 
 ```python
-def __init__(self, list_of_values=None):
+def __init__(self, list_of_values=None, max_heap=False):
     self._data = list(list_of_values) if list_of_values is not None else []
+    
+    if max_heap:
+        self._min_max_multiplier = -1
+        self._data = [-element for element in self._data]
+    else:
+        self._min_max_multiplier = 1
+    
     self._heapify()
 ```
 ---
@@ -27,19 +34,25 @@ from heap import Heap
 empty_heap = Heap()
 print(empty_heap._data)  # Output: []
 
-populated_heap = Heap([3, 7, 1, 5, 10])
-print(populated_heap._data) # Output: [1, 5, 3, 7, 10]
+min_heap = Heap([3, 7, 1, 5, 10])
+print(min_heap._data) # Output: [1, 5, 3, 7, 10]
+
+max_heap = Heap(list_of_values=[3, 7, 1, 5, 10], max_heap=True)
+print(max_heap._data) # Output: [-10, -7, -1, -5, -3]
 ```
 ---
 
 ## Private Attributes
 
 ### `_data`
-
 - **Type**: `list`
 - **Description**: Stores the elements of the heap.
 - **Initial Value**: An empty list.
 
+### `_min_max_multiplier`
+- **Type**: `boolean`
+- **Description**: The value for each ingested or outputted value to be multiplied by
+- **Initial Value**: `False`.
 ---
 
 ## Indexing Scheme
@@ -99,6 +112,33 @@ heap = Heap([20, 5, 15, 22, 1])
 print(heap._data) # Output: [1, 5, 15, 22, 20]
 print(heap.pop()) # Output: 1
 print(heap._data) # Output: [5, 20, 15, 22]
+```
+---
+
+### `.is_min_heap()`
+Returns True if this heap is a min-heap, False if it is a max-heap
+
+### Example
+```python
+max_heap = Heap(list_of_values=[1], max_heap=True)
+print(max_heap.is_min_heap()) # False
+
+min_heap = Heap(list_of_values=[1], max_heap=False)
+print(min_heap.is_min_heap()) # True
+```
+---
+
+
+### `.toggle_heap_type()`
+Converts this heap to its opposite heap type (min-heap to max-heap and vice versa). All internal values are inverted and the heap property is restored
+
+### Example
+```python
+heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+print(heap._data) # Output: [1, 4, 5]
+
+heap.toggle_heap_type()
+print(heap._data) # Output: [-5, -4, -1]
 ```
 ---
 
@@ -172,14 +212,38 @@ At the moment of the function definition, the mutable default list is created. I
 
 Mutable refers to anything that can be changed in place. E.g. `list`, `dict`, `set`, `bytearray`
 
+### DOWN GOES `unittest`! DOWN GOES `unittest`!
+The late Howard Cosell was shouting in my ear as `unittest` hit the canvas. In implementing the max-heap capability for this heap class I realized that I would need to essentially double up my unit test since nearly every operation needs a set of tests for a min-heap and for a max-heap.
+The clean way to accomplish this is through parameterization, or having your tests run twice: once for min-heap, once for max-heap. And `unittest`'s options for accomplishing this were ugly and verbose.
+```python
+import unittest
+
+class TestHeap(unittest.TestCase):
+    def test_pop(self):
+        for max_heap, expected in [(False, [1, 2, 3]), (True, [3, 2, 1])]:
+            with self.subTest(max_heap=max_heap):
+                heap = Heap(list_of_values=[3, 1, 2], max_heap=max_heap)
+                result = [heap.pop() for _ in range(3)]
+                self.assertEqual(expected, result)
+```
+That is just the grossest thing I have ever seen(dramatic). Where do I put my "Arrange-Act-Assert"?! There is nothing glaringly wrong; it's just bad feng shui.
+Here is how it is done using parameters in `pytest`:
+```python
+import pytest
+
+@pytest.mark.parametrize("max_heap", [True, False])
+def test_pop(max_heap):
+    # Arrange
+    heap = Heap(list_of_values=[3, 1, 2], max_heap=max_heap)
+    expected = [3, 2, 1] if max_heap else [1, 2, 3]
+    
+    # Act
+    results = [heap.pop() for _ in range(3)]
+    
+    # Assert
+    assert results == expected
+```
+This version is so much cleaner in my opinion and I find that to be important enough to me to make the switch to `pytest`, which
+is apparently the more serious unit testing python library anyway. As a result this class will feature a full test suite in `pytest`.
 ---
 
-## Future Roadmap
-
-The class will expand to support:
-
-- `extract_min()`
-- `peek()`
-- Internal reheapification (`_heapify_up`, `_heapify_down`)
-- Optional max-heap toggle
-- Input validation and robust error handling
