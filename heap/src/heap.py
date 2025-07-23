@@ -1,6 +1,11 @@
 class Heap:
-    def __init__(self, list_of_values=None):
+    def __init__(self, list_of_values=None, max_heap=False):
         self._data = list(list_of_values) if list_of_values is not None else []
+        if max_heap:
+            self.min_max_multiplier = -1
+            self._data = [-element for element in self._data]
+        else:
+            self.min_max_multiplier = 1
         self._heapify()
 
     def push(self, value):
@@ -10,6 +15,8 @@ class Heap:
         Args
             value: the value to place in the heap
         """
+        # adjust value based on max_heap flag
+        value = self.min_max_multiplier * value
 
         # append the value to the end of the list
         self._data.append(value)
@@ -42,7 +49,7 @@ class Heap:
         if not self._data:
             return None
 
-        return self._data[0]
+        return self.min_max_multiplier * self._data[0]
 
     def pop(self):
         """
@@ -68,7 +75,7 @@ class Heap:
         # Bubble down the new root element to restore min-heap property
         self._bubble_down(0)
 
-        return min_element_value
+        return self.min_max_multiplier * min_element_value
 
     def _bubble_down(self, index):
         if not self._data:
