@@ -1,11 +1,16 @@
 class Heap:
     def __init__(self, list_of_values=None, max_heap=False):
+        # handle incoming data
         self._data = list(list_of_values) if list_of_values is not None else []
+
+        # set min-heap or max-heap property
         if max_heap:
             self._min_max_multiplier = -1
             self._data = [-element for element in self._data]
         else:
             self._min_max_multiplier = 1
+
+        # heapify incoming data
         self._heapify()
 
     def push(self, value):
