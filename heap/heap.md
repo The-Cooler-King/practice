@@ -47,12 +47,12 @@ print(max_heap._data) # Output: [-10, -7, -1, -5, -3]
 ### `_data`
 - **Type**: `list`
 - **Description**: Stores the elements of the heap.
-- **Initial Value**: An empty list.
+- **Default Value**: An empty list.
 
 ### `_min_max_multiplier`
-- **Type**: `boolean`
-- **Description**: The value for each ingested or outputted value to be multiplied by
-- **Initial Value**: `False`.
+- **Type**: `integer`
+- **Description**: The value for each ingested or outputted value to be multiplied by (`1` or `-1`)
+- **Default Value**: `1`
 ---
 
 ## Indexing Scheme
@@ -213,7 +213,7 @@ At the moment of the function definition, the mutable default list is created. I
 Mutable refers to anything that can be changed in place. E.g. `list`, `dict`, `set`, `bytearray`
 
 ### DOWN GOES `unittest`! DOWN GOES `unittest`!
-The late Howard Cosell was shouting in my ear as `unittest` hit the canvas. In implementing the max-heap capability for this heap class I realized that I would need to essentially double up my unit test since nearly every operation needs a set of tests for a min-heap and for a max-heap.
+The late Howard Cosell was shouting in my ear as `unittest` hit the canvas. In implementing the max-heap capability, I realized that I would need to essentially double up my unit test since nearly every operation needs a set of tests for a min-heap and for a max-heap.
 The clean way to accomplish this is through parameterization, or having your tests run twice: once for min-heap, once for max-heap. And `unittest`'s options for accomplishing this were ugly and verbose.
 ```python
 import unittest
@@ -245,5 +245,6 @@ def test_pop(max_heap):
 ```
 This version is so much cleaner in my opinion and I find that to be important enough to me to make the switch to `pytest`, which
 is apparently the more serious unit testing python library anyway. As a result this class will feature a full test suite in `pytest`.
+
 ---
 
