@@ -18,17 +18,7 @@ def test_heap_property_on_init(max_heap):
     )
 
     # Assert
-    for i in range(len(heap._data)):
-        left = 2 * i + 1
-        right = 2 * i + 2
-
-        if left < len(heap._data):
-            assert heap._data[i] <= heap._data[left], \
-                f"Heap property violated: parent {heap._data[i]} > left child {heap._data[left]} at index {i}"
-
-        if right < len(heap._data):
-            assert heap._data[i] <= heap._data[right], \
-                f"Heap property violated: parent {heap._data[i]} > right child {heap._data[right]} at index {i}"
+    assert_heap_property(heap)
 
 
 @pytest.mark.parametrize("max_heap, expected", [
@@ -101,18 +91,7 @@ def test_push_maintains_order_for_heap_property(max_heap):
         heap.push(val)
 
     # Assert
-    # Check that the heap property holds at each parent node
-    for i in range(len(heap._data)):
-        left = 2 * i + 1
-        right = 2 * i + 2
-
-        if left < len(heap._data):
-            assert heap._data[i] <= heap._data[left], \
-                f"Heap property violated: parent {heap._data[i]} > left child {heap._data[left]} at index {i}"
-
-        if right < len(heap._data):
-            assert heap._data[i] <= heap._data[right], \
-                f"Heap property violated: parent {heap._data[i]} > right child {heap._data[right]} at index {i}"
+    assert_heap_property(heap)
 
 
 @pytest.mark.parametrize("max_heap, expected_head, expected_data", [
@@ -208,6 +187,7 @@ def test_pop_returns_smallest(max_heap, expected):
     # Assert
     assert result == expected
 
+
 @pytest.mark.parametrize("max_heap, expected", [
     (False, [1, 3, 4, 5, 8]),
     (True, [8, 5, 4, 3, 1])
@@ -250,18 +230,7 @@ def test_heap_property_after_pop(max_heap):
     heap.pop()
 
     # Assert
-    # Check that the heap property holds at each parent node
-    for i in range(len(heap._data)):
-        left = 2 * i + 1
-        right = 2 * i + 2
-
-        if left < len(heap._data):
-            assert heap._data[i] <= heap._data[left], \
-                f"Heap property violated: parent {heap._data[i]} > left child {heap._data[left]} at index {i}"
-
-        if right < len(heap._data):
-            assert heap._data[i] <= heap._data[right], \
-                f"Heap property violated: parent {heap._data[i]} > right child {heap._data[right]} at index {i}"
+    assert_heap_property(heap)
 
 
 @pytest.mark.parametrize("max_heap", [False, True])
@@ -279,3 +248,67 @@ def test_pop_single_element_then_empty(max_heap):
     # Assert
     assert first_pop == 10
     assert second_pop is None
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, True), (True, False)])
+def test_is_min_heap_no_data(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act and Assert
+    assert heap.is_min_heap() == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, True), (True, False)])
+def test_is_min_heap_with_data(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act and Assert
+    assert heap.is_min_heap() == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, False), (True, True)])
+def test_toggle_heap_type_no_data(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act
+    heap.toggle_heap_type()
+
+    # Assert
+    assert heap.is_min_heap() == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, False), (True, True)])
+def test_is_min_heap_with_data(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act
+    heap.toggle_heap_type()
+
+    # Assert
+    assert heap.is_min_heap() == expected
+    assert_heap_property(heap)
+
+
+def assert_heap_property(heap):
+    # Check that the heap property holds at each parent node
+    for i in range(len(heap._data)):
+        left = 2 * i + 1
+        right = 2 * i + 2
+
+        if left < len(heap._data):
+            assert heap._data[i] <= heap._data[left], \
+                f"Heap property violated: parent {heap._data[i]} > left child {heap._data[left]} at index {i}"
+
+        if right < len(heap._data):
+            assert heap._data[i] <= heap._data[right], \
+                f"Heap property violated: parent {heap._data[i]} > right child {heap._data[right]} at index {i}"
