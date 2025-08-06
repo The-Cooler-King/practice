@@ -298,6 +298,7 @@ def test_is_min_heap_with_data(max_heap, expected):
     assert heap.is_min_heap() == expected
     assert_heap_property(heap)
 
+
 @pytest.mark.parametrize("max_heap, expected", [(False, "MinHeap data=[]"), (True, "MaxHeap data=[]")])
 def test_repr_no_data(max_heap, expected):
     # Arrange
@@ -319,7 +320,8 @@ def test_repr_one_element(max_heap, expected):
     assert repr(heap) == expected
 
 
-@pytest.mark.parametrize("max_heap, expected_starting_string", [(False, "MinHeap data=[1, "), (True, "MaxHeap data=[8, ")])
+@pytest.mark.parametrize("max_heap, expected_starting_string",
+                         [(False, "MinHeap data=[1, "), (True, "MaxHeap data=[8, ")])
 def test_repr_multiple_elements(max_heap, expected_starting_string):
     # Arrange
     heap = Heap(
@@ -332,6 +334,7 @@ def test_repr_multiple_elements(max_heap, expected_starting_string):
 
     # Act and Assert
     assert result.startswith(expected_starting_string)
+
 
 def assert_heap_property(heap):
     # Check that the heap property holds at each parent node
