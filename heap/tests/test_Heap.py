@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 import sys
 import os
@@ -9,197 +9,343 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../s
 from heap import Heap
 
 
-class TestHeap(unittest.TestCase):
-    def test_min_heap_property_on_init(self):
-        # Act
-        heap = Heap([9, 2, 7, 4, 1, 6, 5, 8, 3])
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_heap_property_on_init(max_heap):
+    # Act
+    heap = Heap(
+        list_of_values=[9, 2, 7, 4, 1, 6, 5, 8, 3],
+        max_heap=max_heap
+    )
 
-        # Assert
-        for i in range(len(heap._data)):
-            left = 2 * i + 1
-            right = 2 * i + 2
-
-            if left < len(heap._data):
-                self.assertLessEqual(
-                    heap._data[i], heap._data[left],
-                    f"Heap property violated: parent {heap._data[i]} > left child {heap._data[left]} at index {i}"
-                )
-
-            if right < len(heap._data):
-                self.assertLessEqual(
-                    heap._data[i], heap._data[right],
-                    f"Heap property violated: parent {heap._data[i]} > right child {heap._data[right]} at index {i}"
-                )
-
-    def test_empty_heap_init(self):
-        # Act
-        heap = Heap()
-
-        # Assert
-        self.assertEqual(heap._data, [])
-
-    def test_single_element_heap_init(self):
-        # Act
-        heap = Heap([42])
-
-        # Assert
-        self.assertEqual(heap._data, [42])
-
-    def test_push_single_value(self):
-        # Arrange
-        heap = Heap()
-
-        # Act
-        heap.push(10)
-
-        # Assert
-        self.assertEqual([10], heap._data)
-
-    def test_push_multiple_values_maintains_min_heap(self):
-        # Arrange
-        heap = Heap()
-        values = [10, 4, 7, 2, 8]
-
-        # Act
-        for val in values:
-            heap.push(val)
-
-        # Assert
-        # The smallest value should bubble up to index 0
-        self.assertEqual(min(values), heap._data[0])
-
-    def test_push_maintains_order_for_heap_property(self):
-        # Arrange
-        heap = Heap()
-        values = [20, 5, 15, 22, 1]
-
-        # Act
-        for val in values:
-            heap.push(val)
-
-        # Assert
-        # Check that the heap property holds at each parent node
-        data = heap._data
-        for i in range(len(data)):
-            left = 2 * i + 1
-            right = 2 * i + 2
-            if left < len(data):
-                self.assertLessEqual(data[i], data[left])
-            if right < len(data):
-                self.assertLessEqual(data[i], data[right])
-
-    def test_push_duplicate_values(self):
-        # Arrange
-        heap = Heap()
-        values = [5, 3, 3, 5, 2]
-
-        # Act
-        for val in values:
-            heap.push(val)
-
-        # Assert
-        self.assertEqual(2, heap._data[0])
-        self.assertEqual(sorted(values), sorted(heap._data))
-
-    def test_peek_empty_heap(self):
-        # Arrange
-        heap = Heap()
-
-        # Act
-        smallest_value = heap.peek()
-
-        # Assert
-        self.assertIsNone(smallest_value)
-
-    def test_peek_single_element(self):
-        # Arrange
-        heap = Heap([1])
-
-        # Act
-        smallest_value = heap.peek()
-
-        # Assert
-        self.assertEqual(1, smallest_value)
-
-    def test_peek_multiple_elements(self):
-        # Arrange
-        heap = Heap([20, 5, 15, 22, 1])
-
-        # Act
-        smallest_value = heap.peek()
-
-        # Assert
-        self.assertEqual(1, smallest_value)
-
-    def test_peek_does_not_remove_element(self):
-        # Arrange
-        heap = Heap([3])
-        peeked = heap.peek()
-
-        # Act
-        still_peeked = heap.peek()
-
-        # Assert
-        self.assertEqual(peeked, still_peeked)
-
-    def test_pop_returns_smallest(self):
-        # Arrange
-        heap = Heap([5, 3, 8, 1, 4])
-
-        # Act
-        result = heap.pop()
-
-        # Assert
-        self.assertEqual(result, 1)
-
-    def test_pop_multiple_times_returns_sorted_values(self):
-        # Arrange
-        heap = Heap([5, 3, 8, 1, 4])
-
-        # Act
-        popped_values = [heap.pop() for _ in range(5)]
-
-        # Assert
-        self.assertEqual(popped_values, [1, 3, 4, 5, 8])
-
-    def test_pop_on_empty_heap_returns_none(self):
-        # Arrange
-        heap = Heap()
-
-        # Act
-        result = heap.pop()
-
-        # Assert
-        self.assertIsNone(result)
-
-    def test_heap_property_after_pop(self):
-        # Arrange
-        heap = Heap([5, 3, 8, 1, 4])
-
-        # Act
-        heap.pop()
-
-        # Assert
-        for i in range(len(heap._data) // 2):
-            left = 2 * i + 1
-            right = 2 * i + 2
-            if left < len(heap._data):
-                self.assertLessEqual(heap._data[i], heap._data[left])
-            if right < len(heap._data):
-                self.assertLessEqual(heap._data[i], heap._data[right])
-
-    def test_pop_single_element_then_empty(self):
-        # Arrange
-        heap = Heap([10])
-
-        # Act
-        first_pop = heap.pop()
-        second_pop = heap.pop()
-
-        # Assert
-        self.assertEqual(first_pop, 10)
-        self.assertIsNone(second_pop)
+    # Assert
+    assert_heap_property(heap)
 
 
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.parametrize("max_heap, expected", [
+    (False, "MinHeap data=[]"),
+    (True, "MaxHeap data=[]")
+])
+def test_empty_heap_init(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Assert
+    assert repr(heap) == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [
+    (False, "MinHeap data=[42]"),
+    (True, "MaxHeap data=[42]")
+])
+def test_single_element_heap_init(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[42],
+        max_heap=max_heap
+    )
+
+    # Assert
+    assert repr(heap) == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [
+    (False, "MinHeap data=[10]"),
+    (True, "MaxHeap data=[10]")
+])
+def test_push_single_value(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act
+    heap.push(10)
+
+    # Assert
+    assert repr(heap) == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [
+    (False, 2),
+    (True, 10)
+])
+def test_push_multiple_values_maintains_heap_property(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+    values = [10, 4, 7, 2, 8]
+
+    # Act
+    for value in values:
+        heap.push(value)
+
+    # Assert
+    assert heap.peek() == expected
+
+
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_push_maintains_order_for_heap_property(max_heap):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+    values = [20, 5, 15, 22, 1]
+
+    # Act
+    for val in values:
+        heap.push(val)
+
+    # Assert
+    assert_heap_property(heap)
+
+
+@pytest.mark.parametrize("max_heap, expected_head, expected_data", [
+    (False, 2, [2, 3, 3, 5, 5]),
+    (True, 5, [-5, -5, -3, -3, -2])
+])
+def test_push_duplicate_values(max_heap, expected_head, expected_data):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+    values = [5, 3, 3, 5, 2]
+
+    # Act
+    for val in values:
+        heap.push(val)
+
+    # Assert
+    assert heap.peek() == expected_head
+    assert sorted(heap._data) == expected_data
+
+
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_peek_empty_heap(max_heap):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act
+    head_value = heap.peek()
+
+    # Assert
+    assert head_value is None
+
+
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_peek_single_element(max_heap):
+    # Arrange
+    heap = Heap([1])
+
+    # Act
+    head_value = heap.peek()
+
+    # Assert
+    assert head_value == 1
+
+
+@pytest.mark.parametrize("max_heap, expected", [
+    (False, 1),
+    (True, 22)
+])
+def test_peek_multiple_elements(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[20, 5, 15, 22, 1],
+        max_heap=max_heap
+    )
+
+    # Act
+    head_value = heap.peek()
+
+    # Assert
+    assert head_value == expected
+
+
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_peek_does_not_remove_element(max_heap):
+    # Arrange
+    heap = Heap(
+        list_of_values=[3],
+        max_heap=max_heap
+    )
+    peeked = heap.peek()
+
+    # Act
+    still_peeked = heap.peek()
+
+    # Assert
+    assert still_peeked == peeked
+
+
+@pytest.mark.parametrize("max_heap, expected", [
+    (False, 1),
+    (True, 8)
+])
+def test_pop_returns_smallest(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act
+    result = heap.pop()
+
+    # Assert
+    assert result == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [
+    (False, [1, 3, 4, 5, 8]),
+    (True, [8, 5, 4, 3, 1])
+])
+def test_pop_multiple_times_returns_sorted_values(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act
+    popped_values = [heap.pop() for _ in range(5)]
+
+    # Assert
+    assert popped_values == expected
+
+
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_pop_on_empty_heap_returns_none(max_heap):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act
+    result = heap.pop()
+
+    # Assert
+    assert result is None
+
+
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_heap_property_after_pop(max_heap):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act
+    heap.pop()
+
+    # Assert
+    assert_heap_property(heap)
+
+
+@pytest.mark.parametrize("max_heap", [False, True])
+def test_pop_single_element_then_empty(max_heap):
+    # Arrange
+    heap = Heap(
+        list_of_values=[10],
+        max_heap=max_heap
+    )
+
+    # Act
+    first_pop = heap.pop()
+    second_pop = heap.pop()
+
+    # Assert
+    assert first_pop == 10
+    assert second_pop is None
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, True), (True, False)])
+def test_is_min_heap_no_data(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act and Assert
+    assert heap.is_min_heap() == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, True), (True, False)])
+def test_is_min_heap_with_data(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act and Assert
+    assert heap.is_min_heap() == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, False), (True, True)])
+def test_toggle_heap_type_no_data(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act
+    heap.toggle_heap_type()
+
+    # Assert
+    assert heap.is_min_heap() == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, False), (True, True)])
+def test_is_min_heap_with_data(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act
+    heap.toggle_heap_type()
+
+    # Assert
+    assert heap.is_min_heap() == expected
+    assert_heap_property(heap)
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, "MinHeap data=[]"), (True, "MaxHeap data=[]")])
+def test_repr_no_data(max_heap, expected):
+    # Arrange
+    heap = Heap(max_heap=max_heap)
+
+    # Act and Assert
+    assert repr(heap) == expected
+
+
+@pytest.mark.parametrize("max_heap, expected", [(False, "MinHeap data=[10]"), (True, "MaxHeap data=[10]")])
+def test_repr_one_element(max_heap, expected):
+    # Arrange
+    heap = Heap(
+        list_of_values=[10],
+        max_heap=max_heap
+    )
+
+    # Act and Assert
+    assert repr(heap) == expected
+
+
+@pytest.mark.parametrize("max_heap, expected_starting_string",
+                         [(False, "MinHeap data=[1, "), (True, "MaxHeap data=[8, ")])
+def test_repr_multiple_elements(max_heap, expected_starting_string):
+    # Arrange
+    heap = Heap(
+        list_of_values=[5, 3, 8, 1, 4],
+        max_heap=max_heap
+    )
+
+    # Act
+    result = repr(heap)
+
+    # Act and Assert
+    assert result.startswith(expected_starting_string)
+
+
+def assert_heap_property(heap):
+    # Check that the heap property holds at each parent node
+    for i in range(len(heap._data)):
+        left = 2 * i + 1
+        right = 2 * i + 2
+
+        if left < len(heap._data):
+            assert heap._data[i] <= heap._data[left], \
+                f"Heap property violated: parent {heap._data[i]} > left child {heap._data[left]} at index {i}"
+
+        if right < len(heap._data):
+            assert heap._data[i] <= heap._data[right], \
+                f"Heap property violated: parent {heap._data[i]} > right child {heap._data[right]} at index {i}"

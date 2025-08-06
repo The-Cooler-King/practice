@@ -129,3 +129,13 @@ class Heap:
         self._min_max_multiplier *= -1
         self._data = [-element for element in self._data]
         self._heapify()
+
+    def __repr__(self):
+        if self._min_max_multiplier == 1:
+            heap_type = "MinHeap"
+            data = self._data
+        else:
+            heap_type = "MaxHeap"
+            data = [-element for element in self._data]
+
+        return f"{heap_type} data={data}"
