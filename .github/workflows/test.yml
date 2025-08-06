@@ -1,4 +1,4 @@
-name: Run Python Unit Tests
+name: Run Python Tests
 
 on:
   pull_request:
@@ -24,7 +24,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install pytest
 
-    - name: Discover and run unit tests
+    - name: Run tests with pytest
       run: |
-        find . -type d -name 'tests' -exec python -m unittest discover {} \;
+        pytest --maxfail=1 --disable-warnings -q
