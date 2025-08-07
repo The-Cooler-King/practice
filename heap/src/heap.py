@@ -150,9 +150,16 @@ class Heap:
         if len(self) > 1000:
             warnings.warn("Iterating over large heap (>1,000 elements); performance may degrade.", RuntimeWarning)
 
+        if self.is_min_heap():
+            max_heap = False
+            data_copy = self._data.copy()
+        else:
+            max_heap = True
+            data_copy = [-element for element in self._data]
+
         heap_copy = Heap(
-            list_of_values=self._data,
-            max_heap=not self.is_min_heap()
+            list_of_values=data_copy,
+            max_heap=max_heap
         )
 
         while heap_copy:
@@ -165,4 +172,4 @@ class Heap:
         return len(self._data)
 
     def __contains__(self, item):
-        return item in self._data
+        return item * self._min_max_multiplier in self._data
