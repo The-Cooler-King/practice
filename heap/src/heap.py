@@ -1,3 +1,5 @@
+import warnings
+
 class Heap:
     def __init__(self, list_of_values=None, max_heap=False):
         # handle incoming data
@@ -131,11 +133,36 @@ class Heap:
         self._heapify()
 
     def __repr__(self):
-        if self._min_max_multiplier == 1:
-            heap_type = "MinHeap"
-            data = self._data
-        else:
-            heap_type = "MaxHeap"
-            data = [-element for element in self._data]
+        """
+        Return a concise string representation showing heap type,
+        size, and root value.
+        """
+        heap_type = "MinHeap" if self.is_min_heap() else "MaxHeap"
+        return f"{heap_type}(size={len(self)}, root={self.peek()})"
 
-        return f"{heap_type} data={data}"
+    def __iter__(self):
+        """
+        Iterate over heap elements in pop order (sorted order).
+        Yields elements by repeatedly popping from a copy of the heap.
+
+        Warns if heap size > 1000 due to potential performance issues.
+        """
+        if len(self) > 1000:
+            warnings.warn("Iterating over large heap (>1,000 elements); performance may degrade.", RuntimeWarning)
+
+        heap_copy = Heap(
+            list_of_values=self._data,
+            max_heap=not self.is_min_heap()
+        )
+
+        while heap_copy:
+            yield heap_copy.pop()
+
+    def __bool__(self):
+        return bool(self._data)
+
+    def __len__(self):
+        return len(self._data)
+
+    def __contains__(self, item):
+        return item in self._data
