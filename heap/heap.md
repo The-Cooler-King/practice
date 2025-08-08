@@ -32,13 +32,13 @@ def __init__(self, list_of_values=None, max_heap=False):
 from heap import Heap
 
 empty_heap = Heap()
-print(empty_heap._data)  # Output: []
+print(empty_heap)  # Output: MinHeap(size=0, root=None)
 
 min_heap = Heap([3, 7, 1, 5, 10])
-print(min_heap._data) # Output: [1, 5, 3, 7, 10]
+print(min_heap) # Output: MinHeap(size=5, root=1)
 
 max_heap = Heap(list_of_values=[3, 7, 1, 5, 10], max_heap=True)
-print(max_heap._data) # Output: [-10, -7, -1, -5, -3]
+print(max_heap) # Output: MaxHeap(size=5, root=10)
 ```
 ---
 
@@ -80,7 +80,7 @@ heap.push(15)
 heap.push(22)
 heap.push(1)
 
-print(heap._data) # Output: [1, 5, 15, 22, 20]
+print(heap) # Output: MinHeap(size=5, root=1)
 ```
 ---
 ### `.peek()`
@@ -109,9 +109,9 @@ Removes the minimum element from the heap, returns its value, and restores min-h
 ```python
 heap = Heap([20, 5, 15, 22, 1])
 
-print(heap._data) # Output: [1, 5, 15, 22, 20]
+print(heap.peek()) # Output: 1
 print(heap.pop()) # Output: 1
-print(heap._data) # Output: [5, 20, 15, 22]
+print(heap.peek()) # Output: 5
 ```
 ---
 
@@ -128,17 +128,93 @@ print(min_heap.is_min_heap()) # True
 ```
 ---
 
-
 ### `.toggle_heap_type()`
 Converts this heap to its opposite heap type (min-heap to max-heap and vice versa). All internal values are inverted and the heap property is restored
 
 ### Example
 ```python
 heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
-print(heap._data) # Output: [1, 4, 5]
+print(heap) # Output: MinHeap(size=3, root=1)
 
 heap.toggle_heap_type()
-print(heap._data) # Output: [-5, -4, -1]
+print(heap) # Output: MaxHeap(size=3, root=5)
+```
+---
+## Dunder Methods
+
+### `__len__()`
+Returns the number of elements in the heap. This enables use of the built-in len() function on the heap instance.
+
+### Example
+```python
+heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+print(len(heap)) # Output: 3
+```
+---
+
+### `__repr__()`
+Returns a developer-friendly string representation of the heap object. Useful for debugging and introspection.
+
+### Example
+```python
+heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+print(heap) # Output: MinHeap(size=3, root=1)
+```
+---
+
+### `__contains__(item)`
+Checks whether the given item is in the heap using the `in` keyword.
+
+### Example
+```python
+heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+print(3 in heap) # Output: False
+print(5 in heap) # Output: True
+```
+---
+
+### `__bool__()`
+Returns `True` if the heap is non-empty, `False` otherwise. Enables use of the heap in boolean contexts like `if` statements.
+
+### Example
+```python
+heap = Heap()
+if heap:
+    print("Heap is not empty")
+else:
+    print("Heap is empty")
+# Output: Heap is empty
+
+heap.push(1)
+if heap:
+    print("Heap is not empty")
+else:
+    print("Heap is empty")
+# Output: Heap is not empty
+```
+---
+
+### `__iter__()`
+Returns an iterator over the elements in the heap in heap order.
+
+### Note
+Iterating in heap order is an expensive operation, and should not be performed on large heaps.
+This method warns, but does not stop iteration on large heaps (+1000 elements).
+It is not clear why a user would use the heap class if they wished to iterate through the heap without mutating it, but it was a fun problem to think about so it was included in the class.
+
+### Example
+```python
+heap = Heap(list_of_values=[1, 4, 5, 2, 8], max_heap=False)
+
+for element in heap:
+    print(element)
+
+# Output: 
+# 1
+# 2
+# 4
+# 5
+# 8
 ```
 ---
 
