@@ -14,7 +14,7 @@ from heap import Heap
 def test_heap_property_on_init(max_heap):
     # Act
     heap = Heap(
-        list_of_values=[9, 2, 7, 4, 1, 6, 5, 8, 3],
+        data=[9, 2, 7, 4, 1, 6, 5, 8, 3],
         max_heap=max_heap
     )
 
@@ -41,7 +41,7 @@ def test_empty_heap_init(max_heap, expected):
 def test_single_element_heap_init(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[42],
+        data=[42],
         max_heap=max_heap
     )
 
@@ -144,7 +144,7 @@ def test_peek_single_element(max_heap):
 def test_peek_multiple_elements(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[20, 5, 15, 22, 1],
+        data=[20, 5, 15, 22, 1],
         max_heap=max_heap
     )
 
@@ -159,7 +159,7 @@ def test_peek_multiple_elements(max_heap, expected):
 def test_peek_does_not_remove_element(max_heap):
     # Arrange
     heap = Heap(
-        list_of_values=[3],
+        data=[3],
         max_heap=max_heap
     )
     peeked = heap.peek()
@@ -178,7 +178,7 @@ def test_peek_does_not_remove_element(max_heap):
 def test_pop_returns_smallest(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -196,7 +196,7 @@ def test_pop_returns_smallest(max_heap, expected):
 def test_pop_multiple_times_returns_sorted_values(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -223,7 +223,7 @@ def test_pop_on_empty_heap_returns_none(max_heap):
 def test_heap_property_after_pop(max_heap):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -238,7 +238,7 @@ def test_heap_property_after_pop(max_heap):
 def test_pop_single_element_then_empty(max_heap):
     # Arrange
     heap = Heap(
-        list_of_values=[10],
+        data=[10],
         max_heap=max_heap
     )
 
@@ -264,7 +264,7 @@ def test_is_min_heap_no_data(max_heap, expected):
 def test_is_min_heap_with_data(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -288,7 +288,7 @@ def test_toggle_heap_type_no_data(max_heap, expected):
 def test_is_min_heap_with_data(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -313,7 +313,7 @@ def test_repr_no_data(max_heap, expected):
 def test_repr_one_element(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[10],
+        data=[10],
         max_heap=max_heap
     )
 
@@ -326,7 +326,7 @@ def test_repr_one_element(max_heap, expected):
 def test_repr_multiple_elements(max_heap, expected):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -347,7 +347,7 @@ def test_bool_empty_heap(max_heap):
 def test_bool_non_empty_heap(max_heap):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -367,7 +367,7 @@ def test_len_empty_heap(max_heap):
 def test_len_non_empty_heap(max_heap):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -387,7 +387,7 @@ def test_contains_empty_heap(max_heap):
 def test_contains_value_not_present(max_heap):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -399,7 +399,7 @@ def test_contains_value_not_present(max_heap):
 def test_contains_value_not_present(max_heap):
     # Arrange
     heap = Heap(
-        list_of_values=[5, 3, 8, 1, 4],
+        data=[5, 3, 8, 1, 4],
         max_heap=max_heap
     )
 
@@ -420,7 +420,7 @@ def test_iter_non_empty_heap(max_heap, reverse):
     # Arrange
     values = [5, 3, 8, 1, 4]
     heap = Heap(
-        list_of_values=values,
+        data=values,
         max_heap=max_heap
     )
 
@@ -432,7 +432,7 @@ def test_iter_large_heap_warns():
     # Arrange
     values = list(range(1001))
     heap = Heap(
-        list_of_values=values,
+        data=values,
         max_heap=False
     )
 

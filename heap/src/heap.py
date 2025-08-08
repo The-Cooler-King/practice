@@ -1,9 +1,9 @@
 import warnings
 
 class Heap:
-    def __init__(self, list_of_values=None, max_heap=False):
+    def __init__(self, data=None, max_heap=False):
         # handle incoming data
-        self._data = list(list_of_values) if list_of_values is not None else []
+        self._data = list(data) if data is not None else []
 
         # set min-heap or max-heap property
         if max_heap:
@@ -158,7 +158,7 @@ class Heap:
             data_copy = [-element for element in self._data]
 
         heap_copy = Heap(
-            list_of_values=data_copy,
+            data=data_copy,
             max_heap=max_heap
         )
 

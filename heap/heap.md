@@ -13,8 +13,8 @@ The heap uses **0-based indexing** for internal structure.
 ### Constructor
 
 ```python
-def __init__(self, list_of_values=None, max_heap=False):
-    self._data = list(list_of_values) if list_of_values is not None else []
+def __init__(self, data=None, max_heap=False):
+    self._data = list(data) if data is not None else []
     
     if max_heap:
         self._min_max_multiplier = -1
@@ -37,7 +37,7 @@ print(empty_heap)  # Output: MinHeap(size=0, root=None)
 min_heap = Heap([3, 7, 1, 5, 10])
 print(min_heap) # Output: MinHeap(size=5, root=1)
 
-max_heap = Heap(list_of_values=[3, 7, 1, 5, 10], max_heap=True)
+max_heap = Heap(data=[3, 7, 1, 5, 10], max_heap=True)
 print(max_heap) # Output: MaxHeap(size=5, root=10)
 ```
 ---
@@ -120,10 +120,10 @@ Returns True if this heap is a min-heap, False if it is a max-heap
 
 ### Example
 ```python
-max_heap = Heap(list_of_values=[1], max_heap=True)
+max_heap = Heap(data=[1], max_heap=True)
 print(max_heap.is_min_heap()) # False
 
-min_heap = Heap(list_of_values=[1], max_heap=False)
+min_heap = Heap(data=[1], max_heap=False)
 print(min_heap.is_min_heap()) # True
 ```
 ---
@@ -133,7 +133,7 @@ Converts this heap to its opposite heap type (min-heap to max-heap and vice vers
 
 ### Example
 ```python
-heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+heap = Heap(data=[1, 4, 5], max_heap=False)
 print(heap) # Output: MinHeap(size=3, root=1)
 
 heap.toggle_heap_type()
@@ -147,7 +147,7 @@ Returns the number of elements in the heap. This enables use of the built-in len
 
 ### Example
 ```python
-heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+heap = Heap(data=[1, 4, 5], max_heap=False)
 print(len(heap)) # Output: 3
 ```
 ---
@@ -157,7 +157,7 @@ Returns a developer-friendly string representation of the heap object. Useful fo
 
 ### Example
 ```python
-heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+heap = Heap(data=[1, 4, 5], max_heap=False)
 print(heap) # Output: MinHeap(size=3, root=1)
 ```
 ---
@@ -167,7 +167,7 @@ Checks whether the given item is in the heap using the `in` keyword.
 
 ### Example
 ```python
-heap = Heap(list_of_values=[1, 4, 5], max_heap=False)
+heap = Heap(data=[1, 4, 5], max_heap=False)
 print(3 in heap) # Output: False
 print(5 in heap) # Output: True
 ```
@@ -204,7 +204,7 @@ It is not clear why a user would use the heap class if they wished to iterate th
 
 ### Example
 ```python
-heap = Heap(list_of_values=[1, 4, 5, 2, 8], max_heap=False)
+heap = Heap(data=[1, 4, 5, 2, 8], max_heap=False)
 
 for element in heap:
     print(element)
@@ -298,7 +298,7 @@ class TestHeap(unittest.TestCase):
     def test_pop(self):
         for max_heap, expected in [(False, [1, 2, 3]), (True, [3, 2, 1])]:
             with self.subTest(max_heap=max_heap):
-                heap = Heap(list_of_values=[3, 1, 2], max_heap=max_heap)
+                heap = Heap(data=[3, 1, 2], max_heap=max_heap)
                 result = [heap.pop() for _ in range(3)]
                 self.assertEqual(expected, result)
 ```
@@ -310,7 +310,7 @@ import pytest
 @pytest.mark.parametrize("max_heap", [True, False])
 def test_pop(max_heap):
     # Arrange
-    heap = Heap(list_of_values=[3, 1, 2], max_heap=max_heap)
+    heap = Heap(data=[3, 1, 2], max_heap=max_heap)
     expected = [3, 2, 1] if max_heap else [1, 2, 3]
     
     # Act
