@@ -162,6 +162,47 @@ print_and_capture(section_title=section_title,
                   rows=rows
                   )
 
+# Heap Pop Benchmark
+rows = []
+section_title = "Heap Pop"
+
+for n in sizes:
+    # Setup for MyHeap
+    setup_myheap = f'''
+from heap import Heap
+import random
+data = [random.randint(1, 1000000) for _ in range({n})]
+heap = Heap(data=data)
+'''
+
+    stmt_myheap = f'''
+for _ in range({n}):
+    heap.pop()
+'''
+
+    # Setup for heapq
+    setup_heapq = f'''
+import heapq
+import random
+heap = [random.randint(1, 1000000) for _ in range({n})]
+heapq.heapify(heap)
+'''
+
+    stmt_heapq = f'''
+for _ in range({n}):
+    heapq.heappop(heap)
+'''
+
+    time_myheap = timeit.timeit(stmt_myheap, setup=setup_myheap, number=1)
+    time_heapq = timeit.timeit(stmt_heapq, setup=setup_heapq, number=1)
+
+    rows.append(f"{n:>8} | {time_myheap:>15.6f} | {time_heapq:>15.6f} | {time_myheap / time_heapq:>15.1f}")
+
+print_and_capture(section_title=section_title,
+                  header=header,
+                  rows=rows
+                  )
+
 update = input("Would you like to update benchmarks.md? (y/n): ").strip().lower()
 if update == "y":
     filename = os.path.join(os.path.dirname(__file__), "benchmarks.md")
