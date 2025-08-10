@@ -206,7 +206,7 @@ print_and_capture(section_title=section_title,
 update = input("Would you like to update benchmarks.md? (y/n): ").strip().lower()
 if update == "y":
     filename = os.path.join(os.path.dirname(__file__), "benchmarks.md")
-    with open(filename, "a", encoding="utf-8") as f:
+    with open(filename, "w", encoding="utf-8") as f:
         f.write(f"\n# Benchmark Results — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
         for section in markdown_sections:
             f.write(section + "\n\n")
