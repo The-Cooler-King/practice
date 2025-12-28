@@ -234,6 +234,8 @@ def isMatch(s: str, p: str) -> bool:
                     return True
                 else:
                     continue
+            else:
+                return False
 
         # Zero occurrence case for empty string
         if len(s) == 0 and len(p) <= 2:
@@ -248,3 +250,13 @@ def isMatch(s: str, p: str) -> bool:
         if current_char == "." or current_char == s[0]:
             return isMatch(s[1:], p[1:])
         return False
+
+#isMatch("mississippi", "mis*is*p*.")
+#print(isMatch("ssippi", "p*."))
+print(isMatch("aaaaaaaaaaaaab", "a*a*a*a*a*a*a*a*a*c"))
+'''
+s =
+"aaaaaaaaaaaaab"
+p =
+"a*a*a*a*a*a*a*a*a*c"
+'''
